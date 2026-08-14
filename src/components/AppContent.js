@@ -9,7 +9,7 @@ import ProtectedRoute from '../ProtectedRoute'
 const AppContent = () => {
   return (
     <>
-      <div style={{ backgroundColor: '#F7F7F7' }} className="p-4">
+      <div style={{ backgroundColor: '#f8fafc' }} className="p-4">
         <Suspense fallback={<CSpinner color="primary" />}>
           <Routes>
             {routes.map((route, idx) => {

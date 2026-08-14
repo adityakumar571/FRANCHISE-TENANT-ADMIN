@@ -12,7 +12,7 @@ const DefaultLayout = () => {
   const navigate = useNavigate()
   const [userData, setUserData] = useState(null)
   const { setRole } = useRoles()
-  const { setUser } = useContext(AppContext)
+  const { setUser, user } = useContext(AppContext)
   const subscriptionStatus = useSubscriptionStatus()
 
   useEffect(() => {
@@ -50,8 +50,10 @@ const DefaultLayout = () => {
       >
         <AppHeader userData={userData} />
 
-        {/* Subscription warning banner — visible on every page */}
-        <SubscriptionWarningBanner subscriptionStatus={subscriptionStatus} />
+        {/* Subscription warning banner — only for school tenants, not SuperAdmin */}
+        {user?.role !== 'SuperAdmin' && user?.role !== 'Admin' && (
+          <SubscriptionWarningBanner subscriptionStatus={subscriptionStatus} />
+        )}
 
         <div className="body flex-grow-1">
           <AppContent userData={userData} />

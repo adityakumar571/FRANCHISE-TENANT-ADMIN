@@ -1,206 +1,134 @@
 /* eslint-disable prettier/prettier */
 import { useState } from 'react'
-import { Settings, Save, Globe, Mail, Shield, Bell } from 'lucide-react'
-import { Form, Input, Select, Switch, Button } from 'antd'
-import toast from 'react-hot-toast'
+import { Save } from 'lucide-react'
 
-const { Option } = Select
+const TABS = ['General Settings', 'Web Settings', 'Email Settings']
 
-const TABS = [
-  { key: 'general',  label: 'General Settings',  icon: Globe   },
-  { key: 'web',      label: 'Web Settings',       icon: Globe   },
-  { key: 'email',    label: 'Email Settings',     icon: Mail    },
-  { key: 'security', label: 'Security Settings',  icon: Shield  },
-  { key: 'notify',   label: 'Notification Settings', icon: Bell },
-]
-
-function FieldRow({ label, children }) {
-  return (
-    <div style={{ display:'flex',alignItems:'flex-start',gap:'16px',padding:'12px 0',borderBottom:'1px solid #f3f4f6' }}>
-      <label style={{ width:'200px',flexShrink:0,fontSize:'13px',fontWeight:600,color:'#374151',paddingTop:'6px' }}>{label}</label>
-      <div style={{ flex:1 }}>{children}</div>
-    </div>
-  )
-}
-
-function inputStyle(extra={}) {
-  return { height:'36px',fontSize:'13px',borderRadius:'8px',border:'1px solid #e5e7eb',...extra }
-}
+const Input = ({ label, value, onChange, type = 'text', placeholder = '' }) => (
+  <div>
+    <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '4px' }}>{label}</label>
+    <input type={type} value={value} onChange={onChange} placeholder={placeholder}
+      style={{ width: '100%', padding: '8px 10px', border: '1px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', outline: 'none', background: '#f9fafb', boxSizing: 'border-box' }} />
+  </div>
+)
 
 export default function SystemSettings() {
-  const [activeTab, setActiveTab] = useState('general')
-  const [saving, setSaving] = useState(false)
-  const [generalForm] = Form.useForm()
-  const [emailForm]   = Form.useForm()
+  const [activeTab, setActiveTab] = useState('General Settings')
+  const [general, setGeneral] = useState({
+    platformName: 'FranchizeAll',
+    adminEmail: 'admin@franchizeall.com',
+    supportEmail: 'support@franchizeall.com',
+    phone: '+91 9876543210',
+    address: '123, Business Hub, Mumbai, Maharashtra',
+    timezone: 'Asia/Kolkata',
+    currency: 'INR (₹)',
+  })
+  const [web, setWeb] = useState({
+    siteUrl: 'https://franchizeall.com',
+    logoUrl: '',
+    faviconUrl: '',
+    maintenanceMode: false,
+    googleAnalytics: 'UA-XXXXXXXXX-X',
+  })
+  const [email, setEmail] = useState({
+    smtpHost: 'smtp.gmail.com',
+    smtpPort: '587',
+    smtpUser: 'noreply@franchizeall.com',
+    smtpPass: '',
+    fromName: 'FranchizeAll',
+    fromEmail: 'noreply@franchizeall.com',
+  })
 
-  const handleSave = async (formInstance) => {
-    try {
-      await formInstance.validateFields()
-      setSaving(true)
-      await new Promise(r => setTimeout(r, 800))
-      toast.success('Settings saved successfully')
-    } catch { /* validation error */ }
-    finally { setSaving(false) }
-  }
+  const setG = (k) => (e) => setGeneral(f => ({ ...f, [k]: e.target.value }))
+  const setW = (k) => (e) => setWeb(f => ({ ...f, [k]: e.target.value }))
+  const setE = (k) => (e) => setEmail(f => ({ ...f, [k]: e.target.value }))
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div style={{ background:'#fff',border:'1px solid #e5e7eb',borderRadius:'12px',padding:'16px 20px',marginBottom:'16px',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
-        <div>
-          <h1 style={{ fontSize:'16px',fontWeight:700,color:'#111827',margin:0,display:'flex',alignItems:'center',gap:'8px' }}>
-            <Settings size={20} style={{ color:'#1a73e8' }} /> System Settings
-          </h1>
-          <p style={{ fontSize:'13px',color:'#9ca3af',margin:0 }}>Configure platform-wide settings</p>
-        </div>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div>
+        <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', margin: 0 }}>System Settings</h1>
+        <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0' }}>Home / System Settings</p>
       </div>
 
-      <div style={{ display:'grid',gridTemplateColumns:'220px 1fr',gap:'16px' }}>
-        {/* Sidebar tabs */}
-        <div style={{ background:'#fff',border:'1px solid #e5e7eb',borderRadius:'12px',padding:'8px',height:'fit-content' }}>
-          {TABS.map(({ key, label, icon: Icon }) => (
-            <button key={key} onClick={() => setActiveTab(key)}
-              style={{ width:'100%',display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',borderRadius:'8px',border:'none',cursor:'pointer',fontSize:'13px',fontWeight:600,marginBottom:'2px',transition:'all .15s',
-                background: activeTab===key ? '#e8f1ff' : 'transparent',
-                color:      activeTab===key ? '#1a73e8' : '#6b7280' }}>
-              <Icon size={15} /> {label}
+      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '16px', alignItems: 'start' }}>
+        {/* Left tabs */}
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '10px', overflow: 'hidden' }}>
+          {TABS.map(t => (
+            <button key={t} onClick={() => setActiveTab(t)}
+              style={{ display: 'block', width: '100%', padding: '12px 16px', border: 'none', textAlign: 'left', fontSize: '13px', fontWeight: activeTab === t ? 700 : 500, background: activeTab === t ? '#e8f1ff' : '#fff', color: activeTab === t ? '#1a73e8' : '#374151', cursor: 'pointer', borderLeft: activeTab === t ? '3px solid #1a73e8' : '3px solid transparent', transition: 'all .15s' }}>
+              {t}
             </button>
           ))}
         </div>
 
-        {/* Content */}
-        <div style={{ background:'#fff',border:'1px solid #e5e7eb',borderRadius:'12px',padding:'24px' }}>
-
-          {activeTab === 'general' && (
-            <Form form={generalForm} layout="vertical">
-              <h2 style={{ fontSize:'15px',fontWeight:700,color:'#111827',marginBottom:'20px' }}>General Settings</h2>
-              <FieldRow label="Platform Name">
-                <Input defaultValue="FranchizeAll" style={inputStyle()} placeholder="Platform name" />
-              </FieldRow>
-              <FieldRow label="Admin Email">
-                <Input defaultValue="admin@franchizeall.com" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="Support Email">
-                <Input defaultValue="support@franchizeall.com" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="Contact Number">
-                <Input defaultValue="+91 99999 99999" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="Address">
-                <Input.TextArea rows={2} defaultValue="New Delhi, India" style={{ fontSize:'13px',borderRadius:'8px',border:'1px solid #e5e7eb' }} />
-              </FieldRow>
-              <FieldRow label="Timezone">
-                <Select defaultValue="Asia/Kolkata" style={{ width:'100%',height:36 }}>
-                  <Option value="Asia/Kolkata">Asia/Kolkata (IST)</Option>
-                  <Option value="UTC">UTC</Option>
-                </Select>
-              </FieldRow>
-              <FieldRow label="Date Format">
-                <Select defaultValue="DD/MM/YYYY" style={{ width:'100%',height:36 }}>
-                  <Option value="DD/MM/YYYY">DD/MM/YYYY</Option>
-                  <Option value="MM/DD/YYYY">MM/DD/YYYY</Option>
-                  <Option value="YYYY-MM-DD">YYYY-MM-DD</Option>
-                </Select>
-              </FieldRow>
-              <div style={{ marginTop:'20px',display:'flex',justifyContent:'flex-end' }}>
-                <Button type="primary" loading={saving} onClick={() => handleSave(generalForm)}
-                  style={{ background:'#1a73e8',borderColor:'#1a73e8',height:'36px',borderRadius:'8px',fontWeight:600 }}>
-                  <Save size={14} style={{ marginRight:'6px' }} /> Save Changes
-                </Button>
+        {/* Right content */}
+        <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '22px' }}>
+          {activeTab === 'General Settings' && (
+            <>
+              <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 18px' }}>General Settings</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <Input label="Platform Name"   value={general.platformName}  onChange={setG('platformName')}  placeholder="Platform Name" />
+                <Input label="Admin Email"     value={general.adminEmail}    onChange={setG('adminEmail')}    type="email" placeholder="admin@example.com" />
+                <Input label="Support Email"   value={general.supportEmail}  onChange={setG('supportEmail')}  type="email" placeholder="support@example.com" />
+                <Input label="Contact Phone"   value={general.phone}         onChange={setG('phone')}         placeholder="+91 XXXXXXXXXX" />
+                <div style={{ gridColumn: '1/-1' }}>
+                  <Input label="Address" value={general.address} onChange={setG('address')} placeholder="Address" />
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '4px' }}>Timezone</label>
+                  <select value={general.timezone} onChange={setG('timezone')}
+                    style={{ width: '100%', padding: '8px 10px', border: '1px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', outline: 'none', background: '#f9fafb' }}>
+                    {['Asia/Kolkata', 'UTC', 'America/New_York', 'Europe/London'].map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 600, color: '#374151', display: 'block', marginBottom: '4px' }}>Currency</label>
+                  <select value={general.currency} onChange={setG('currency')}
+                    style={{ width: '100%', padding: '8px 10px', border: '1px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', outline: 'none', background: '#f9fafb' }}>
+                    {['INR (₹)', 'USD ($)', 'EUR (€)', 'GBP (£)'].map(c => <option key={c}>{c}</option>)}
+                  </select>
+                </div>
               </div>
-            </Form>
+            </>
           )}
 
-          {activeTab === 'web' && (
-            <div>
-              <h2 style={{ fontSize:'15px',fontWeight:700,color:'#111827',marginBottom:'20px' }}>Web Settings</h2>
-              <FieldRow label="Site URL">
-                <Input defaultValue="https://franchizeall.com" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="Logo URL">
-                <Input defaultValue="" placeholder="Enter logo URL" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="Favicon URL">
-                <Input defaultValue="" placeholder="Enter favicon URL" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="Maintenance Mode">
-                <Switch defaultChecked={false} />
-              </FieldRow>
-              <div style={{ marginTop:'20px',display:'flex',justifyContent:'flex-end' }}>
-                <Button type="primary" loading={saving} onClick={() => { setSaving(true); setTimeout(()=>{ setSaving(false); toast.success('Saved') },800) }}
-                  style={{ background:'#1a73e8',borderColor:'#1a73e8',height:'36px',borderRadius:'8px',fontWeight:600 }}>
-                  <Save size={14} style={{ marginRight:'6px' }} /> Save Changes
-                </Button>
+          {activeTab === 'Web Settings' && (
+            <>
+              <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 18px' }}>Web Settings</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div style={{ gridColumn: '1/-1' }}>
+                  <Input label="Site URL" value={web.siteUrl} onChange={setW('siteUrl')} placeholder="https://example.com" />
+                </div>
+                <Input label="Logo URL"    value={web.logoUrl}    onChange={setW('logoUrl')}    placeholder="https://..." />
+                <Input label="Favicon URL" value={web.faviconUrl} onChange={setW('faviconUrl')} placeholder="https://..." />
+                <Input label="Google Analytics ID" value={web.googleAnalytics} onChange={setW('googleAnalytics')} placeholder="UA-XXXXXXXXX-X" />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 0' }}>
+                  <input type="checkbox" checked={web.maintenanceMode} onChange={e => setWeb(f => ({ ...f, maintenanceMode: e.target.checked }))} style={{ width: '16px', height: '16px', cursor: 'pointer' }} />
+                  <label style={{ fontSize: '13px', color: '#374151', cursor: 'pointer', fontWeight: 500 }}>Enable Maintenance Mode</label>
+                </div>
               </div>
-            </div>
+            </>
           )}
 
-          {activeTab === 'email' && (
-            <Form form={emailForm} layout="vertical">
-              <h2 style={{ fontSize:'15px',fontWeight:700,color:'#111827',marginBottom:'20px' }}>Email Settings</h2>
-              <FieldRow label="SMTP Host">
-                <Input defaultValue="smtp.gmail.com" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="SMTP Port">
-                <Input defaultValue="587" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="SMTP Username">
-                <Input defaultValue="noreply@franchizeall.com" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="SMTP Password">
-                <Input.Password defaultValue="••••••••" style={inputStyle()} />
-              </FieldRow>
-              <FieldRow label="From Name">
-                <Input defaultValue="FranchizeAll Support" style={inputStyle()} />
-              </FieldRow>
-              <div style={{ marginTop:'20px',display:'flex',justifyContent:'flex-end' }}>
-                <Button type="primary" loading={saving} onClick={() => handleSave(emailForm)}
-                  style={{ background:'#1a73e8',borderColor:'#1a73e8',height:'36px',borderRadius:'8px',fontWeight:600 }}>
-                  <Save size={14} style={{ marginRight:'6px' }} /> Save Changes
-                </Button>
+          {activeTab === 'Email Settings' && (
+            <>
+              <h2 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 18px' }}>Email Settings</h2>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <Input label="SMTP Host"  value={email.smtpHost}  onChange={setE('smtpHost')}  placeholder="smtp.gmail.com" />
+                <Input label="SMTP Port"  value={email.smtpPort}  onChange={setE('smtpPort')}  placeholder="587" />
+                <Input label="SMTP User"  value={email.smtpUser}  onChange={setE('smtpUser')}  placeholder="user@example.com" />
+                <Input label="SMTP Password" type="password" value={email.smtpPass} onChange={setE('smtpPass')} placeholder="••••••••" />
+                <Input label="From Name"  value={email.fromName}  onChange={setE('fromName')}  placeholder="Your Platform" />
+                <Input label="From Email" value={email.fromEmail} onChange={setE('fromEmail')} placeholder="noreply@example.com" />
               </div>
-            </Form>
+            </>
           )}
 
-          {activeTab === 'security' && (
-            <div>
-              <h2 style={{ fontSize:'15px',fontWeight:700,color:'#111827',marginBottom:'20px' }}>Security Settings</h2>
-              {[
-                { label:'Two-Factor Authentication', desc:'Require 2FA for all admin logins', default:false },
-                { label:'Session Timeout',           desc:'Auto logout after 30 minutes of inactivity', default:true },
-                { label:'Login Alerts',              desc:'Send email on new login from unknown device', default:true },
-                { label:'IP Whitelist',              desc:'Restrict access to specific IP addresses', default:false },
-              ].map((item, i) => (
-                <FieldRow key={i} label={item.label}>
-                  <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between' }}>
-                    <span style={{ fontSize:'12px',color:'#9ca3af' }}>{item.desc}</span>
-                    <Switch defaultChecked={item.default} />
-                  </div>
-                </FieldRow>
-              ))}
-            </div>
-          )}
-
-          {activeTab === 'notify' && (
-            <div>
-              <h2 style={{ fontSize:'15px',fontWeight:700,color:'#111827',marginBottom:'20px' }}>Notification Settings</h2>
-              {[
-                { label:'New Franchise Registration', desc:'Notify when a new franchise registers', default:true },
-                { label:'Subscription Expiry Alert',  desc:'Alert 7 days before subscription expires', default:true },
-                { label:'Payment Received',           desc:'Notify on every payment received', default:true },
-                { label:'Overdue Payment Alert',      desc:'Alert when payment is overdue', default:true },
-                { label:'Support Ticket Created',     desc:'Notify when a new support ticket is raised', default:false },
-              ].map((item, i) => (
-                <FieldRow key={i} label={item.label}>
-                  <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between' }}>
-                    <span style={{ fontSize:'12px',color:'#9ca3af' }}>{item.desc}</span>
-                    <Switch defaultChecked={item.default} />
-                  </div>
-                </FieldRow>
-              ))}
-            </div>
-          )}
-
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #f3f4f6' }}>
+            <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#1a73e8', color: '#fff', border: 'none', borderRadius: '8px', padding: '9px 20px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+              <Save size={14} /> Save Changes
+            </button>
+          </div>
         </div>
       </div>
     </div>

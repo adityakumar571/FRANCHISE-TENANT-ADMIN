@@ -1,125 +1,91 @@
 /* eslint-disable prettier/prettier */
-import { useState, useEffect } from 'react'
-import { Activity, Search, Filter, Download } from 'lucide-react'
-import { Select, DatePicker } from 'antd'
-import AppTable, { Td } from '../../../components/AppTable'
-import { getRequest } from '../../../Helpers'
+import { useState } from 'react'
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
 
-const { Option } = Select
-const { RangePicker } = DatePicker
-
-const ACTION_COLORS = {
-  Create:  { bg:'#e8f8f0', color:'#16a34a', border:'#bbf0d0' },
-  Update:  { bg:'#e8f1ff', color:'#1a73e8', border:'#c5d8ff' },
-  Delete:  { bg:'#fff1f1', color:'#dc2626', border:'#ffc5c5' },
-  Login:   { bg:'#f0ecff', color:'#7c3aed', border:'#d4c8ff' },
-  Payment: { bg:'#fff4e6', color:'#ea7c1e', border:'#ffd9a8' },
-  Billing: { bg:'#fffbeb', color:'#d97706', border:'#fde68a' },
-}
-
-// Mock data for demo
-const MOCK_LOGS = [
-  { _id:'1', user:'Super Admin', email:'superadmin@franchizeall.com', action:'Create', module:'Franchise', description:'New franchise "Sharma Medical Store" has been created', ip:'192.168.1.1', createdAt: new Date().toISOString() },
-  { _id:'2', user:'Admin',       email:'admin@franchizeall.com',      action:'Payment', module:'Billing',   description:'Payment of ₹12,000 received from Verma Pharmacy', ip:'192.168.1.2', createdAt: new Date(Date.now()-3600000).toISOString() },
-  { _id:'3', user:'Super Admin', email:'superadmin@franchizeall.com', action:'Update',  module:'Subscription', description:'Subscription of "Patel Drug House" updated to Enterprise plan', ip:'192.168.1.1', createdAt: new Date(Date.now()-7200000).toISOString() },
-  { _id:'4', user:'Admin',       email:'admin@franchizeall.com',      action:'Login',   module:'Auth',      description:'Admin logged in from new device', ip:'103.25.4.5', createdAt: new Date(Date.now()-10800000).toISOString() },
-  { _id:'5', user:'Super Admin', email:'superadmin@franchizeall.com', action:'Delete',  module:'User',      description:'User account deleted: john.doe@example.com', ip:'192.168.1.1', createdAt: new Date(Date.now()-18000000).toISOString() },
-  { _id:'6', user:'Admin',       email:'admin@franchizeall.com',      action:'Create',  module:'Plan',      description:'New subscription plan "Custom Enterprise" created', ip:'192.168.1.2', createdAt: new Date(Date.now()-86400000).toISOString() },
-  { _id:'7', user:'Super Admin', email:'superadmin@franchizeall.com', action:'Billing', module:'Billing',   description:'Monthly bill generated for Gupta Medicals', ip:'192.168.1.1', createdAt: new Date(Date.now()-172800000).toISOString() },
-  { _id:'8', user:'Admin',       email:'admin@franchizeall.com',      action:'Update',  module:'Franchise', description:'Franchise "Khan Pharmacy" status changed to Active', ip:'192.168.1.2', createdAt: new Date(Date.now()-259200000).toISOString() },
+const LOGS = [
+  { time: '20 May 2025, 09:30 AM', user: 'Rajesh Kumar',  action: 'Created Franchise',  target: 'Sharma Medical Store', ip: '192.168.1.10', module: 'Franchise', type: 'Create' },
+  { time: '20 May 2025, 09:15 AM', user: 'Priya Sharma',  action: 'Login',               target: 'System',               ip: '192.168.1.11', module: 'Auth',      type: 'Login'  },
+  { time: '20 May 2025, 08:50 AM', user: 'Rajesh Kumar',  action: 'Updated Subscription',target: 'Verma Pharmacy',        ip: '192.168.1.10', module: 'Billing',   type: 'Update' },
+  { time: '20 May 2025, 08:20 AM', user: 'System',        action: 'Auto Expired',        target: 'Patel Drug House',      ip: 'System',       module: 'Billing',   type: 'System' },
+  { time: '19 May 2025, 05:45 PM', user: 'Suresh Verma',  action: 'Changed Password',    target: 'Profile',               ip: '192.168.1.15', module: 'Auth',      type: 'Update' },
+  { time: '19 May 2025, 03:30 PM', user: 'Priya Sharma',  action: 'Deleted User',        target: 'Demo Account',          ip: '192.168.1.11', module: 'Users',     type: 'Delete' },
+  { time: '18 May 2025, 02:10 PM', user: 'Rajesh Kumar',  action: 'Activated Franchise', target: 'Gupta Medicals',        ip: '192.168.1.10', module: 'Franchise', type: 'Update' },
+  { time: '17 May 2025, 11:00 AM', user: 'System',        action: 'Backup Completed',    target: 'Database',              ip: 'System',       module: 'System',    type: 'System' },
 ]
 
+const TYPE_COLOR = { Create: ['#e8f8f0', '#16a34a'], Login: ['#e8f1ff', '#1a73e8'], Update: ['#fffbeb', '#d97706'], Delete: ['#fff1f1', '#dc2626'], System: ['#f0ecff', '#7c3aed'] }
+
+const Th = ({ c }) => <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: '11px', color: '#6b7280', fontWeight: 700, textTransform: 'uppercase', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', whiteSpace: 'nowrap' }}>{c}</th>
+const Td = ({ c, s = {} }) => <td style={{ padding: '10px 12px', fontSize: '13px', color: '#374151', borderBottom: '1px solid #f3f4f6', ...s }}>{c}</td>
+
 export default function ActivityLogs() {
-  const [data, setData]       = useState(MOCK_LOGS)
-  const [loading, setLoading] = useState(false)
-  const [page, setPage]       = useState(1)
-  const [limit, setLimit]     = useState(10)
-  const [total, setTotal]     = useState(MOCK_LOGS.length)
   const [search, setSearch]   = useState('')
-  const [actionFilter, setActionFilter] = useState(null)
+  const [from, setFrom]       = useState('')
+  const [to, setTo]           = useState('')
+  const [type, setType]       = useState('All')
+  const [page, setPage]       = useState(1)
+  const PER = 10
 
-  const filtered = data.filter(row => {
-    const matchSearch = !search || row.description.toLowerCase().includes(search.toLowerCase()) || row.user.toLowerCase().includes(search.toLowerCase())
-    const matchAction = !actionFilter || row.action === actionFilter
-    return matchSearch && matchAction
-  })
-
-  const COLS = [
-    { key:'sr',     label:'Sr.',        align:'center', width:60  },
-    { key:'time',   label:'Time',       align:'center', width:160 },
-    { key:'user',   label:'User',       align:'left',   width:180 },
-    { key:'action', label:'Action',     align:'center', width:110 },
-    { key:'module', label:'Module',     align:'center', width:120 },
-    { key:'desc',   label:'Description',align:'left',   width:320 },
-    { key:'ip',     label:'IP Address', align:'center', width:130 },
-  ]
+  const filtered = LOGS.filter(l =>
+    (search === '' || l.user.toLowerCase().includes(search.toLowerCase()) || l.action.toLowerCase().includes(search.toLowerCase())) &&
+    (type === 'All' || l.type === type)
+  )
+  const rows = filtered.slice((page - 1) * PER, page * PER)
 
   return (
-    <div className="min-h-screen">
-      {/* Header */}
-      <div style={{ background:'#fff',border:'1px solid #e5e7eb',borderRadius:'12px',padding:'16px 20px',marginBottom:'16px',display:'flex',justifyContent:'space-between',alignItems:'center' }}>
-        <div>
-          <h1 style={{ fontSize:'16px',fontWeight:700,color:'#111827',margin:0,display:'flex',alignItems:'center',gap:'8px' }}>
-            <Activity size={20} style={{ color:'#1a73e8' }} /> Activity Logs
-          </h1>
-          <p style={{ fontSize:'13px',color:'#9ca3af',margin:0 }}>Track all system activities and changes</p>
-        </div>
-        <button style={{ display:'flex',alignItems:'center',gap:'6px',padding:'8px 16px',borderRadius:'8px',border:'1px solid #e5e7eb',background:'#fff',cursor:'pointer',fontSize:'13px',fontWeight:600,color:'#374151' }}>
-          <Download size={14} /> Export
-        </button>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div>
+        <h1 style={{ fontSize: '18px', fontWeight: 700, color: '#111827', margin: 0 }}>Activity Logs</h1>
+        <p style={{ fontSize: '12px', color: '#9ca3af', margin: '2px 0 0' }}>Home / Activity Logs</p>
       </div>
 
       {/* Filters */}
-      <div style={{ background:'#fff',border:'1px solid #e5e7eb',borderRadius:'12px',padding:'12px 16px',marginBottom:'16px',display:'flex',gap:'12px',flexWrap:'wrap' }}>
-        <div style={{ position:'relative',flex:1,minWidth:'200px' }}>
-          <Search size={13} style={{ position:'absolute',left:'10px',top:'50%',transform:'translateY(-50%)',color:'#9ca3af' }} />
-          <input value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="Search logs..."
-            style={{ width:'100%',paddingLeft:'32px',paddingRight:'12px',height:'34px',border:'1px solid #e5e7eb',borderRadius:'8px',fontSize:'13px',outline:'none' }} />
+      <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '14px 18px', display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
+          <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
+          <input value={search} onChange={e => { setSearch(e.target.value); setPage(1) }} placeholder="Search logs..."
+            style={{ width: '100%', padding: '8px 10px 8px 30px', border: '1px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', outline: 'none', background: '#f9fafb' }} />
         </div>
-        <Select value={actionFilter} onChange={setActionFilter} allowClear placeholder="Filter by action"
-          style={{ width:'160px',height:'34px' }}>
-          {Object.keys(ACTION_COLORS).map(a => <Option key={a} value={a}>{a}</Option>)}
-        </Select>
-        <RangePicker style={{ height:'34px',fontSize:'13px' }} />
+        <input type="date" value={from} onChange={e => setFrom(e.target.value)} style={{ padding: '8px 10px', border: '1px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', background: '#f9fafb', color: '#374151' }} />
+        <input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ padding: '8px 10px', border: '1px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', background: '#f9fafb', color: '#374151' }} />
+        <select value={type} onChange={e => { setType(e.target.value); setPage(1) }}
+          style={{ padding: '8px 12px', border: '1px solid #e5e7eb', borderRadius: '7px', fontSize: '13px', background: '#f9fafb', color: '#374151', cursor: 'pointer' }}>
+          {['All', 'Create', 'Update', 'Delete', 'Login', 'System'].map(t => <option key={t}>{t}</option>)}
+        </select>
       </div>
 
       {/* Table */}
-      <AppTable columns={COLS} data={filtered.slice((page-1)*limit, page*limit)} loading={loading}
-        page={page} limit={limit} total={filtered.length}
-        onPageChange={setPage} onPageSizeChange={s=>{ setLimit(s);setPage(1) }}
-        rowKey={r=>r._id} emptyText="No activity logs found">
-        {(row, i) => (
-          <>
-            <Td align="center">{(page-1)*limit+i+1}</Td>
-            <Td align="center">
-              <span style={{ fontSize:'11px',color:'#6b7280' }}>
-                {new Date(row.createdAt).toLocaleString('en-IN',{ day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit' })}
-              </span>
-            </Td>
-            <Td>
-              <div>
-                <p style={{ fontSize:'12px',fontWeight:600,color:'#111827',margin:0 }}>{row.user}</p>
-                <p style={{ fontSize:'11px',color:'#9ca3af',margin:0 }}>{row.email}</p>
-              </div>
-            </Td>
-            <Td align="center">
-              {(() => { const c = ACTION_COLORS[row.action] || ACTION_COLORS.Update; return (
-                <span style={{ fontSize:'10px',fontWeight:700,padding:'2px 8px',borderRadius:'20px',background:c.bg,color:c.color,border:`1px solid ${c.border}` }}>
-                  {row.action}
-                </span>
-              )})()}
-            </Td>
-            <Td align="center">
-              <span style={{ fontSize:'11px',fontWeight:600,color:'#374151',background:'#f3f4f6',padding:'2px 8px',borderRadius:'6px' }}>{row.module}</span>
-            </Td>
-            <Td><span style={{ fontSize:'12px',color:'#374151' }}>{row.description}</span></Td>
-            <Td align="center">
-              <code style={{ fontSize:'11px',color:'#6b7280',background:'#f3f4f6',padding:'2px 6px',borderRadius:'4px' }}>{row.ip}</code>
-            </Td>
-          </>
-        )}
-      </AppTable>
+      <div style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: '10px', overflow: 'hidden' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead><tr>{['Date & Time', 'User', 'Action', 'Target', 'IP Address', 'Module', 'Type'].map(h => <Th key={h} c={h} />)}</tr></thead>
+          <tbody>
+            {rows.length === 0
+              ? <tr><td colSpan={7} style={{ padding: '40px', textAlign: 'center', color: '#9ca3af', fontSize: '13px' }}>No logs found</td></tr>
+              : rows.map((l, i) => {
+                  const [bg, tx] = TYPE_COLOR[l.type] || ['#f3f4f6', '#6b7280']
+                  return (
+                    <tr key={i} onMouseEnter={e => e.currentTarget.style.background = '#fafafa'} onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
+                      <Td c={<span style={{ fontSize: '12px', color: '#6b7280' }}>{l.time}</span>} />
+                      <Td c={<span style={{ fontWeight: 600, color: '#111827' }}>{l.user}</span>} />
+                      <Td c={l.action} />
+                      <Td c={l.target} />
+                      <Td c={<span style={{ fontFamily: 'monospace', fontSize: '12px' }}>{l.ip}</span>} />
+                      <Td c={l.module} />
+                      <Td c={<span style={{ fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '20px', background: bg, color: tx }}>{l.type}</span>} />
+                    </tr>
+                  )
+                })
+            }
+          </tbody>
+        </table>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 18px', borderTop: '1px solid #f3f4f6' }}>
+          <span style={{ fontSize: '12px', color: '#6b7280' }}>Showing {rows.length} of {filtered.length} entries</span>
+          <div style={{ display: 'flex', gap: '4px' }}>
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} style={{ background: 'none', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer' }}><ChevronLeft size={14} /></button>
+            <button onClick={() => setPage(p => Math.min(Math.ceil(filtered.length / PER), p + 1))} style={{ background: 'none', border: '1px solid #e5e7eb', borderRadius: '6px', padding: '4px 8px', cursor: 'pointer' }}><ChevronRight size={14} /></button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
