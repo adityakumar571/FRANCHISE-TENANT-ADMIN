@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { School, Plus, Eye, Edit, Trash2, CreditCard, Clock, LogIn, Gift } from 'lucide-react'
+import { Store, Plus, Eye, Edit, Trash2, CreditCard, Clock, LogIn, Gift } from 'lucide-react'
 import { Tag, Switch, Tooltip } from 'antd'
 import toast from 'react-hot-toast'
 import { deleteRequest, getRequest, patchRequest } from '../../../Helpers'
@@ -115,7 +115,7 @@ const SchoolListing = () => {
   /* ── Column definitions ── */
   const COLUMNS = [
     { key: 'sr',         label: 'Sr.',        align: 'center', width: 60,  sticky: 'left'  },
-    { key: 'school',     label: 'School',     align: 'left',   width: 220 },
+    { key: 'school',     label: 'Franchise Name', align: 'left',   width: 220 },
     { key: 'subdomain',  label: 'Subdomain',  align: 'center', width: 180 },
     { key: 'db',         label: 'Database',   align: 'center', width: 110 },
     { key: 'plan',       label: 'Plan',       align: 'center', width: 180 },
@@ -130,10 +130,10 @@ const SchoolListing = () => {
       <div className="bg-white p-4 rounded-lg border border-gray-200 mb-4 flex justify-between items-center">
         <div>
           <h1 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
-            <School size={20} className="text-[#e24028]" />
-            School Management
+            <Store size={20} className="text-[#1a73e8]" />
+            Franchise Management
           </h1>
-          <p className="text-sm text-gray-500">Manage all registered schools</p>
+          <p className="text-sm text-gray-500">Manage all registered franchises</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -144,9 +144,9 @@ const SchoolListing = () => {
           </button>
           <button
             onClick={() => { setSelectedItem(null); setIsModalOpen(true) }}
-            className="bg-[#0c3b73] hover:bg-[#0a2f5c] text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition"
+            className="bg-[#1a73e8] hover:bg-[#1557b0] text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition"
           >
-            <Plus size={16} /> Register School
+            <Plus size={16} /> Add Franchise
           </button>
         </div>
       </div>
@@ -183,7 +183,7 @@ const SchoolListing = () => {
                 <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200 flex-shrink-0">
                   {row.logo
                     ? <img src={row.logo} alt="" className="w-full h-full object-contain p-0.5" />
-                    : <School size={16} className="text-gray-400" />}
+                    : <Store size={16} className="text-gray-400" />}
                 </div>
                 <div>
                   <p className="text-sm font-medium text-gray-800 leading-tight">{row.schoolName || row.name}</p>
