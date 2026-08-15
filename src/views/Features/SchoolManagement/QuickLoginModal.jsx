@@ -101,7 +101,7 @@ const QuickLoginModal = ({ open, onClose, school }) => {
     setStep('done')
     toast.success(`Opening ${school.schoolName}…`)
     const schoolUrl = getSchoolUrl(school.subdomain || '')
-    const targetUrl = `${schoolUrl}/auto-login?token=${encodeURIComponent(token)}`
+    const targetUrl = `${schoolUrl}/auto-login?token=${encodeURIComponent(token)}&subdomain=${encodeURIComponent(school.subdomain || '')}`
     setTimeout(() => {
       window.open(targetUrl, '_blank', 'noopener,noreferrer')
       handleClose()

@@ -4,7 +4,7 @@ import { Tag, Switch, Tooltip } from 'antd'
 import toast from 'react-hot-toast'
 import { deleteRequest, getRequest, patchRequest } from '../../../Helpers'
 import SchoolFilters from './SchoolFilters'
-import SchoolModal from './SchoolRegisterModal'
+import FranchiseModal from './FranchiseModal'
 import DeleteModal from '../../../components/DeleteModal/DeleteModal'
 import AppTable, { Td } from '../../../components/AppTable'
 import { useNavigate } from 'react-router-dom'
@@ -264,7 +264,7 @@ const SchoolListing = () => {
       />
 
       {isModalOpen && (
-        <SchoolModal
+        <FranchiseModal
           key={selectedItem?._id || 'new'}
           open={isModalOpen}
           editData={selectedItem}

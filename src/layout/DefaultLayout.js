@@ -5,23 +5,25 @@ import { useNavigate } from 'react-router-dom'
 import { deleteCookie } from '../Hooks/cookie'
 import { AppContext } from '../Context/AppContext'
 import { useRoles } from '../Context/AuthContext'
-import { useSubscriptionStatus } from '../Hooks/useSubscriptionStatus'
-import SubscriptionWarningBanner from '../components/SubscriptionWarningBanner'
+import Cookies from 'js-cookie'
 
 const DefaultLayout = () => {
   const navigate = useNavigate()
   const [userData, setUserData] = useState(null)
   const { setRole } = useRoles()
-  const { setUser, user } = useContext(AppContext)
-  const subscriptionStatus = useSubscriptionStatus()
+  const { setUser } = useContext(AppContext)
 
   useEffect(() => {
+    // 🔐 No token → redirect to login immediately
+    const token = Cookies.get('multitenant')
+    if (!token) {
+      navigate('/login', { replace: true })
+      return
+    }
+
     const savedUser = localStorage.getItem('userId')
     const parsedUser = savedUser ? JSON.parse(savedUser) : null
-
-    if (!parsedUser) return
-
-    setUserData(parsedUser)
+    if (parsedUser) setUserData(parsedUser)
 
     getRequest(`mainUser/getProfile`)
       .then((res) => {
@@ -33,7 +35,7 @@ const DefaultLayout = () => {
         if (error.response?.status === 401) {
           deleteCookie('multitenant')
           localStorage.removeItem('userId')
-          navigate('/login')
+          navigate('/login', { replace: true })
         } else {
           console.error('API Error:', error)
         }
@@ -49,11 +51,6 @@ const DefaultLayout = () => {
         style={{ position: 'relative', zIndex: 1 }}
       >
         <AppHeader userData={userData} />
-
-        {/* Subscription warning banner — only for school tenants, not SuperAdmin */}
-        {user?.role !== 'SuperAdmin' && user?.role !== 'Admin' && (
-          <SubscriptionWarningBanner subscriptionStatus={subscriptionStatus} />
-        )}
 
         <div className="body flex-grow-1">
           <AppContent userData={userData} />
