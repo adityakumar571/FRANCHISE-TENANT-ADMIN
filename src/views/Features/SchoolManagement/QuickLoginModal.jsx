@@ -7,7 +7,6 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import axios from 'axios'
-import { getRequest } from '../../../Helpers'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 
@@ -57,7 +56,6 @@ const RoleCard = ({ label, desc, icon: Icon, selected, onClick, disabled }) => (
 ════════════════════════════════════════════════ */
 const QuickLoginModal = ({ open, onClose, school }) => {
   const [step, setStep] = useState('idle')
-  const [allCreds, setAllCreds] = useState(null)
   const [selectedRole, setSelectedRole] = useState('SuperAdmin')
   const [errorMsg, setErrorMsg] = useState('')
   const [debugInfo, setDebugInfo] = useState(null)
@@ -65,63 +63,34 @@ const QuickLoginModal = ({ open, onClose, school }) => {
 
   useEffect(() => {
     if (open && school?._id) {
-      setStep('fetching')
-      setAllCreds(null)
+      setStep('choose')
       setSelectedRole('SuperAdmin')
       setErrorMsg('')
       setDebugInfo(null)
       setShowDebug(false)
-      doFetchCredentials()
     }
   }, [open, school?._id])
 
-  const doFetchCredentials = async () => {
-    try {
-      const res = await getRequest(`schools/${school._id}`)
-      const data = res?.data?.data
-      const superAdmin = data?.superAdminCredentials || data?.credentials
-      const admin = data?.adminCredentials
-      if (!superAdmin && !admin) throw new Error('No credentials returned from backend for this school.')
-      setAllCreds({ superAdmin, admin })
-      setStep('choose')
-    } catch (err) {
-      const msg = err?.response?.data?.message || err?.message || 'Failed to fetch credentials'
-      setErrorMsg(msg)
-      setDebugInfo({ type: 'fetch', url: `${API_BASE}schools/${school._id}`, error: msg })
-      setStep('error')
-    }
-  }
-
   const handleRoleConfirm = () => {
-    const creds = selectedRole === 'SuperAdmin' ? allCreds?.superAdmin : allCreds?.admin
-    if (!creds) {
-      setErrorMsg(`No ${selectedRole} credentials found for this school.`)
-      setStep('error')
-      return
-    }
     setStep('logging-in')
-    handleLoginWithCreds(creds)
+    handleLoginAs(selectedRole)
   }
 
-  const handleLoginWithCreds = async (creds) => {
-    const userId = creds?.userId || creds?.email || ''
-    const password = creds?.password || ''
-    const subdomain = school.subdomain || ''
+  const handleLoginAs = async (role) => {
     try {
       const res = await axios.post(
-        `${API_BASE}auth/loginWithPassword`,
-        { userId, password },
-        { headers: { 'x-tenant-id': subdomain } }
+        `${API_BASE}schools/${school._id}/login-as`,
+        { role }
       )
-      const token = res?.data?.data?.authToken || res?.data?.data?.token
+      const token = res?.data?.data?.token
       if (!token) throw new Error('Login succeeded but no token returned')
       openPortal(token)
     } catch (err) {
-      const msg = err?.response?.data?.message || err?.message || 'Login failed. Please check credentials.'
+      const msg = err?.response?.data?.message || err?.message || 'Login failed.'
       setErrorMsg(msg)
       setDebugInfo({
         type: 'login',
-        tried: [`POST ${API_BASE}auth/loginWithPassword → { userId: "${userId}" } Header: x-tenant-id: "${subdomain}"`],
+        tried: [`POST ${API_BASE}schools/${school._id}/login-as → { role: "${role}" }`],
         error: msg,
       })
       setStep('error')
@@ -141,7 +110,6 @@ const QuickLoginModal = ({ open, onClose, school }) => {
 
   const handleClose = () => {
     setStep('idle')
-    setAllCreds(null)
     setErrorMsg('')
     setDebugInfo(null)
     setShowDebug(false)
@@ -219,14 +187,6 @@ const QuickLoginModal = ({ open, onClose, school }) => {
           </span>
         </div>
 
-        {/* ── FETCHING ── */}
-        {step === 'fetching' && (
-          <div style={{ padding: '32px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
-            <Loader2 size={26} className="text-[#0c3b73] animate-spin" />
-            <p style={{ fontSize: 13, color: '#94a3b8', margin: 0 }}>Fetching school data…</p>
-          </div>
-        )}
-
         {/* ── CHOOSE ROLE ── */}
         {step === 'choose' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -238,7 +198,6 @@ const QuickLoginModal = ({ open, onClose, school }) => {
               desc="Full school control — masters, fee setup, sessions"
               icon={UserCog}
               selected={selectedRole === 'SuperAdmin'}
-              disabled={!allCreds?.superAdmin}
               onClick={() => setSelectedRole('SuperAdmin')}
             />
             <RoleCard
@@ -246,7 +205,6 @@ const QuickLoginModal = ({ open, onClose, school }) => {
               desc="Day-to-day operations — students, fees, attendance"
               icon={User}
               selected={selectedRole === 'Admin'}
-              disabled={!allCreds?.admin}
               onClick={() => setSelectedRole('Admin')}
             />
           </div>
@@ -353,7 +311,7 @@ const QuickLoginModal = ({ open, onClose, school }) => {
 
           {step === 'error' && (
             <button
-              onClick={() => { setErrorMsg(''); setDebugInfo(null); setShowDebug(false); setStep('fetching'); doFetchCredentials() }}
+              onClick={() => { setErrorMsg(''); setDebugInfo(null); setShowDebug(false); setStep('choose') }}
               style={{
                 flex: 2, padding: '11px 0', fontSize: 13, fontWeight: 700, fontFamily: 'Inter, sans-serif',
                 border: 'none', borderRadius: 12, color: 'white',

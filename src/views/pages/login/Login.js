@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { AppContext } from '../../../Context/AppContext'
 import { postRequest } from '../../../Helpers'
 
-import logo from '../../../assets/auctech-logo.png'
+import logo from '../../../assets/PharmaNexus.png'
 import loginImg from '../../../assets/logins.jpg'
 
 const Login = () => {

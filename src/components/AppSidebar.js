@@ -28,7 +28,7 @@ import {
 } from 'lucide-react'
 import { AppContext } from '../Context/AppContext'
 
-import logo from '../assets/auctech-logo.png'
+import logo from '../assets/PharmaNexus.png'
 
 /* ── nav config ─────────────────────────────────────────────────────────── */
 const NAV_ITEMS = [

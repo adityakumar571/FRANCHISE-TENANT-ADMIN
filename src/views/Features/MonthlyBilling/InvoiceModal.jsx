@@ -6,7 +6,7 @@ import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import toast from 'react-hot-toast'
 import { getRequest } from '../../../Helpers'
-import logoImg from '../../../assets/auctech-logo.png'
+import logoImg from '../../../assets/PharmaNexus.png'
 
 const BRAND = '#0c3b73'
 const FONT  = "'Inter','Segoe UI','Helvetica Neue',Arial,sans-serif"

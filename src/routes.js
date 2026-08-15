@@ -4,7 +4,7 @@ import React from 'react'
 import DashboardRouter        from './views/dashboard/DashboardRouter'
 
 // Franchise Management
-import FranchiseManagement    from './views/Features/FranchiseManagement/FranchiseManagement'
+import FranchiseManagement    from './views/Features/SchoolManagement/SchoolListing'
 import SchoolDashboard        from './views/Features/SchoolManagement/SchoolDetails/schoolDetails'
 import LeadsListing           from './views/Features/Leads/LeadsListing'
 
