@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeft,
   School,
+  Store,
   Users,
   UserCheck,
   Layers3,
@@ -154,7 +155,7 @@ function CredentialsCard({ credentials }) {
     </h2>
 
     <p className="text-sm font-medium text-slate-400 mt-0.5">
-      School login information
+      Franchise login information
     </p>
 
   </div>
@@ -244,8 +245,8 @@ export default function Dashboard() {
           <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center">
             <School className="w-8 h-8 text-red-400" />
           </div>
-          <p className="text-slate-700 font-semibold text-lg">Failed to load school profile</p>
-          <p className="text-sm text-slate-400">The school database may be unavailable or the ID is invalid.</p>
+          <p className="text-slate-700 font-semibold text-lg">Failed to load franchise profile</p>
+          <p className="text-sm text-slate-400">The franchise database may be unavailable or the ID is invalid.</p>
           <button
             onClick={() => { setLoading(true); fetchData() }}
             className="mt-2 px-5 py-2 bg-[#0c3b73] text-white text-sm rounded-xl hover:bg-[#0a2f5c] transition"
@@ -286,7 +287,7 @@ export default function Dashboard() {
               <img src={tenant.logo} alt="logo" className="w-16 h-16 rounded-2xl object-cover border border-slate-200 flex-shrink-0" />
             ) : (
               <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <School className="w-8 h-8 text-blue-600" />
+                <Store className="w-8 h-8 text-blue-600" />
               </div>
             )}
 
@@ -320,7 +321,7 @@ export default function Dashboard() {
               className="flex items-center gap-2 px-4 py-2 bg-[#0c3b73] hover:bg-[#0a2f5c] text-white text-sm font-semibold rounded-xl transition shadow-sm"
             >
               <LogIn size={15} />
-              Quick Login to School
+              Quick Login to Franchise
             </button>
           </div>
 
@@ -381,8 +382,8 @@ export default function Dashboard() {
                   <Building2 className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <h2 className="text-[18px] font-medium text-slate-800">School Information</h2>
-                  <p className="text-sm font-medium text-slate-400 mt-0.5">Institution details & contact info</p>
+                  <h2 className="text-[18px] font-medium text-slate-800">Franchise Information</h2>
+                  <p className="text-sm font-medium text-slate-400 mt-0.5">Business details & contact info</p>
                 </div>
               </div>
 
@@ -446,7 +447,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <h2 className="text-[18px] font-medium text-slate-800">Platform Statistics</h2>
-                  <p className="text-sm font-medium text-slate-400 mt-0.5">Overall school analytics</p>
+                  <p className="text-sm font-medium text-slate-400 mt-0.5">Overall franchise analytics</p>
                 </div>
               </div>
 

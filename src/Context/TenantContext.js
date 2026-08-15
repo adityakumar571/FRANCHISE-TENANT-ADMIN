@@ -6,7 +6,7 @@ const TenantContext = createContext()
 // Routes that should NOT be treated as subdomains
 const KNOWN_ROUTES = [
   'login', 'register', '404', '500', 'dashboard',
-  'school-management', 'subscription-plans', 'addon-plans',
+  'franchise-management', 'subscription-plans', 'addon-plans',
   'subscription-history', 'support',
 ]
 

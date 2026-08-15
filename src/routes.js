@@ -8,6 +8,7 @@ import FranchiseManagement    from './views/Features/SchoolManagement/SchoolList
 import SchoolDashboard        from './views/Features/SchoolManagement/SchoolDetails/schoolDetails'
 import LeadsListing           from './views/Features/Leads/LeadsListing'
 
+
 // Subscription
 import SubscriptionListing    from './views/Features/SubscriptionPlan/SubscriptionPlan'
 import AddOnListing           from './views/Features/Add-on-Plans/Add-on-Plans'
@@ -46,10 +47,10 @@ const routes = [
   { path: '/dashboard',                    element: DashboardRouter,          roles: ['SuperAdmin', 'Admin'] },
 
   // Franchise Management
-  { path: '/franchise-management',         element: FranchiseManagement,      roles: ['SuperAdmin', 'Admin'] },
-  { path: '/school-management/listing',    element: FranchiseManagement,      roles: ['SuperAdmin', 'Admin'] },
-  { path: '/school-management/details/:id', element: SchoolDashboard,         roles: ['SuperAdmin', 'Admin'] },
-  { path: '/leads',                        element: LeadsListing,             roles: ['SuperAdmin', 'Admin'] },
+  { path: '/franchise-management',              element: FranchiseManagement,      roles: ['SuperAdmin', 'Admin'] },
+  { path: '/franchise-management/listing',      element: FranchiseManagement,      roles: ['SuperAdmin', 'Admin'] },
+  { path: '/franchise-management/details/:id',  element: SchoolDashboard,          roles: ['SuperAdmin', 'Admin'] },
+  { path: '/leads',                             element: LeadsListing,             roles: ['SuperAdmin', 'Admin'] },
 
   // Subscription
   { path: '/subscription-plans',           element: SubscriptionListing,      roles: ['SuperAdmin', 'Admin'] },

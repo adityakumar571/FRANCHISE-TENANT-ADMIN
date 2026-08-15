@@ -170,7 +170,7 @@ const SchoolListing = () => {
         onPageChange={(p) => setPage(p)}
         onPageSizeChange={(size) => { setLimit(size); setPage(1) }}
         rowKey={(row) => row._id}
-        onRowClick={(row) => navigate(`/school-management/details/${row._id}`)}
+        onRowClick={(row) => navigate(`/franchise-management/details/${row._id}`)}
       >
         {(row, index) => (
           <>
@@ -239,7 +239,7 @@ const SchoolListing = () => {
                     <Gift className="w-4 h-4" />
                   </button>
                 </Tooltip>
-                <button className="w-8 h-8 flex items-center justify-center rounded-full text-green-600 hover:text-white hover:bg-green-600 transition-all" onClick={() => navigate(`/school-management/details/${row._id}`)}>
+                <button className="w-8 h-8 flex items-center justify-center rounded-full text-green-600 hover:text-white hover:bg-green-600 transition-all" onClick={() => navigate(`/franchise-management/details/${row._id}`)}>
                   <Eye className="w-4 h-4" />
                 </button>
                 <button className="w-8 h-8 flex items-center justify-center rounded-full text-blue-600 hover:text-white hover:bg-blue-600 transition-all" onClick={() => { setSelectedItem(row); setIsModalOpen(true) }}>

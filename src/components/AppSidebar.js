@@ -38,7 +38,7 @@ const NAV_ITEMS = [
       { label: 'Dashboard',           to: '/dashboard',                      icon: LayoutDashboard },
       {
         label: 'Franchise Management', icon: Store, children: [
-          { label: 'All Franchises',   to: '/school-management/listing' },
+          { label: 'All Franchises',   to: '/franchise-management/listing' },
           { label: 'Leads & Requests', to: '/leads' },
         ],
       },
