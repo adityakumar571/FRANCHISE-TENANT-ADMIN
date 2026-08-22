@@ -117,7 +117,7 @@ const FreeTrialPackages = () => {
             )}
           </div>
           {row.isDefault && (
-            <Tooltip title="Default trial package — assigned to every new school">
+            <Tooltip title="Default trial package — assigned to every new franchise">
               <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-300 ml-1 whitespace-nowrap">
                 <Star size={10} className="fill-amber-500 stroke-amber-500" /> Default
               </span>

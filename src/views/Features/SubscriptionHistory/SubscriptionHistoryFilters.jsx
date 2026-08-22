@@ -80,11 +80,11 @@ const SubscriptionHistoryFilters = ({
 
         {/* School */}
         <div className="flex flex-col w-full sm:w-[200px]">
-          <label className="text-xs font-medium text-gray-600 mb-1">School</label>
+          <label className="text-xs font-medium text-gray-600 mb-1">Franchise</label>
           <Select
             allowClear
             showSearch
-            placeholder="All schools"
+            placeholder="All franchises"
             loading={schoolsLoading}
             value={draft.tenantId}
             onChange={(v) => set('tenantId', v)}

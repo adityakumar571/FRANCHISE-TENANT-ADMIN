@@ -69,6 +69,8 @@ const NAV_ITEMS = [
     section: 'SYSTEM',
     items: [
       { label: 'Support Tickets',     to: '/support',           icon: LifeBuoy },
+      { label: 'Help Center',          to: '/help-center',       icon: HelpCircle },
+      { label: 'SaaS Management',      to: '/saas',              icon: CalendarDays },
       { label: 'FAQ',                 to: '/faq',               icon: HelpCircle },
       { label: 'Contact Inquiries',   to: '/contact-inquiries', icon: MessageSquare },
       { label: 'Newsletter',          to: '/newsletter',        icon: Bell },

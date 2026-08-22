@@ -312,7 +312,7 @@ export default function Dashboard() {
             <div>
               <p className="text-xs text-slate-400 font-medium">Subdomain</p>
               <p className="text-sm font-medium text-slate-700 mt-1">
-                {tenant.subdomain || 'pns'}.schoolcloudx.com
+                {tenant.subdomain || 'pns'}.franchisecloudx.com
               </p>
             </div>
             {/* ⚡ Quick Login Button */}

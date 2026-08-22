@@ -666,8 +666,8 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
     setLoading(true)
     try {
       const payload = buildPayload()
-      if (isEdit) { await putRequest({ url: `schools/${editData._id}`, cred: payload }); toast.success('School updated successfully') }
-      else { await postRequest({ url: 'schools', cred: payload }); toast.success('School registered successfully') }
+      if (isEdit) { await putRequest({ url: `schools/${editData._id}`, cred: payload }); toast.success('Franchise updated successfully') }
+      else { await postRequest({ url: 'schools', cred: payload }); toast.success('Franchise registered successfully') }
       refresh(); onClose()
     } catch (err) { toast.error(err?.response?.data?.message || (isEdit ? 'Update failed' : 'Registration failed')) }
     finally { setLoading(false) }
@@ -711,7 +711,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
   }
 
   const TABS = [
-    { key: 'identity', label: 'School Identity' },
+    { key: 'identity', label: 'Franchise Identity' },
     { key: 'address',  label: 'Address & Contact' },
     { key: 'payment',  label: 'Payment & DB' },
     ...(isEdit ? [{ key: 'subscription', label: '💳 Subscription' }] : []),
@@ -727,10 +727,10 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
       title={
         <div>
           <p className="mb-0" style={{ fontSize: 18, fontWeight: 600, color: '#1e293b' }}>
-            {isEdit ? 'Edit School' : 'Register School'}
+            {isEdit ? 'Edit Franchise' : 'Register Franchise'}
           </p>
           <p className="mb-0 text-muted" style={{ fontSize: 13, fontWeight: 400 }}>
-            {isEdit ? 'Update school details below' : 'Fill in the required details to register a new school'}
+            {isEdit ? 'Update franchise details below' : 'Fill in the required details to register a new franchise'}
           </p>
         </div>
       }
@@ -754,14 +754,14 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
       </div>
 
       {/* ══════════════════════════════════════════
-          TAB 1 — School Identity
+          TAB 1 — Franchise Identity
       ══════════════════════════════════════════ */}
       {activeTab === 'identity' && (
         <div className="container-fluid px-0">
 
           {/* Logo */}
           <div className="card mb-3">
-            <div className="card-header !bg-[#0c3b73] text-white">School Logo</div>
+            <div className="card-header !bg-[#0c3b73] text-white">Franchise Logo</div>
             <div className="card-body">
               <div className="d-flex align-items-center gap-4">
                 {/* Preview box */}
@@ -801,9 +801,9 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
             <div className="card-body">
               <div className="row g-3">
                 <div className="col-md-4">
-                  <label className="form-label">School Name <span className="text-danger">*</span></label>
+                  <label className="form-label">Franchise Name <span className="text-danger">*</span></label>
                   <input className={`form-control form-control-sm ${errors.schoolName ? 'is-invalid' : ''}`}
-                    value={form.schoolName} onChange={e => set('schoolName', e.target.value)} placeholder="e.g. Delhi Public School" />
+                    value={form.schoolName} onChange={e => set('schoolName', e.target.value)} placeholder="e.g. ABC Franchise" />
                   {renderError('schoolName')}
                 </div>
 
@@ -821,7 +821,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
                       placeholder="e.g. dps-noida"
                       disabled={isEdit}
                     />
-                    <span className="input-group-text" style={{ fontSize: 11 }}>.schoolcloudx.com</span>
+                    <span className="input-group-text" style={{ fontSize: 11 }}>.franchisecloudx.com</span>
                   </div>
                   {!isEdit && <SubdomainBadge status={subdomainStatus} />}
                   {isEdit && <small className="text-muted">Subdomain cannot be changed after registration</small>}
@@ -829,7 +829,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
                 </div>
 
                 <div className="col-md-4">
-                  <label className="form-label">School Code <span className="text-danger">*</span></label>
+                  <label className="form-label">Franchise Code <span className="text-danger">*</span></label>
                   <input className={`form-control form-control-sm ${errors.schoolCode ? 'is-invalid' : ''}`}
                     value={form.schoolCode} onChange={e => set('schoolCode', e.target.value)} placeholder="e.g. DPS001" />
                   {renderError('schoolCode')}
@@ -838,7 +838,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
                 <div className="col-md-4">
                   <label className="form-label">Register Email ID <span className="text-danger">*</span></label>
                   <input type="email" className={`form-control form-control-sm ${errors.schoolEmail ? 'is-invalid' : ''}`}
-                    value={form.schoolEmail} onChange={e => set('schoolEmail', e.target.value)} placeholder="school@gmail.com" />
+                    value={form.schoolEmail} onChange={e => set('schoolEmail', e.target.value)} placeholder="franchise@gmail.com" />
                   {renderError('schoolEmail')}
                 </div>
 
@@ -862,7 +862,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
                   <label className="form-label">Description</label>
                   <textarea className="form-control form-control-sm" rows={2}
                     value={form.description} onChange={e => set('description', e.target.value)}
-                    placeholder="Brief description of the school (optional)" style={{ resize: 'none' }} />
+                    placeholder="Brief description of the franchise (optional)" style={{ resize: 'none' }} />
                 </div>
               </div>
             </div>
@@ -902,9 +902,9 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
       {activeTab === 'address' && (
         <div className="container-fluid px-0">
 
-          {/* School Address */}
+          {/* Franchise Address */}
           <div className="card mb-3">
-            <div className="card-header !bg-[#0c3b73] text-white">School Address</div>
+            <div className="card-header !bg-[#0c3b73] text-white">Franchise Address</div>
             <div className="card-body">
               <div className="row g-3">
                 <div className="col-12">
@@ -996,7 +996,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
                   <label className="form-label">Email ID</label>
                   <input type="email" className={`form-control form-control-sm ${errors.contactPerson1_email ? 'is-invalid' : ''}`}
                     value={form.contactPerson1.email} onChange={e => setCP('contactPerson1','email',e.target.value)}
-                    placeholder="name@school.com" />
+                    placeholder="name@franchise.com" />
                   {renderError('contactPerson1_email')}
                 </div>
               </div>
@@ -1032,7 +1032,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
                   <label className="form-label">Email ID</label>
                   <input type="email" className={`form-control form-control-sm ${errors.contactPerson2_email ? 'is-invalid' : ''}`}
                     value={form.contactPerson2.email} onChange={e => setCP('contactPerson2','email',e.target.value)}
-                    placeholder="name@school.com" />
+                    placeholder="name@franchise.com" />
                   {renderError('contactPerson2_email')}
                 </div>
               </div>
@@ -1109,7 +1109,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
           {/* Status — edit only */}
           {isEdit && (
             <div className="card mb-3">
-              <div className="card-header !bg-[#0c3b73] text-white">School Status</div>
+              <div className="card-header !bg-[#0c3b73] text-white">Franchise Status</div>
               <div className="card-body">
                 <div className="form-check form-switch">
                   <input className="form-check-input" type="checkbox" role="switch" id="isActive"
@@ -1359,7 +1359,7 @@ const SchoolModal = ({ open, onClose, editData, refresh }) => {
               style={{ backgroundColor: '#0c3b73' }}
               onClick={handleSubmit} disabled={loading || uploading}>
               {loading && <Loader2 size={14} className="animate-spin" />}
-              {loading ? (isEdit ? 'Updating...' : 'Registering...') : (isEdit ? 'Update School' : 'Register School')}
+              {loading ? (isEdit ? 'Updating...' : 'Registering...') : (isEdit ? 'Update Franchise' : 'Register Franchise')}
             </button>
           )}
         </div>

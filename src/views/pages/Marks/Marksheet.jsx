@@ -19,10 +19,10 @@ const Marksheet = ({ data, currentSession }) => {
   return (
     <div className="bg-gray-100 p-2 md:p-6 print:p-0 print:bg-white">
       <div className="bg-white border-2 border-black p-2 md:p-4 overflow-x-auto print:overflow-visible">
-        {/* ===== SCHOOL HEADER ===== */}
+        {/* ===== FRANCHISE HEADER ===== */}
         <div className="text-center border-b-2 border-black pb-2">
           <h1 className="text-xl md:text-3xl font-bold print:text-2xl">
-            Type Your School Name Here
+            Type Your Franchise Name Here
           </h1>
           <p className="text-xs md:text-sm print:text-sm">
             Type Address Here (U Dice Code - 0123456789)

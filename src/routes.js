@@ -29,8 +29,12 @@ import SessionBillingReport   from './views/Features/Reports/SessionBillingRepor
 import CollectionSummaryReport from './views/Features/Reports/CollectionSummaryReport'
 import PlanDistributionReport from './views/Features/Reports/PlanDistributionReport'
 
-// Support
+// Support / Help
 import SupportTickets         from './views/Features/SupportTickets/SupportTickets'
+import HelpCenter             from './views/Features/SupportTickets/HelpCenter'
+
+// SaaS Management
+import SaasManagement         from './views/Features/SaasManagement/SaasManagement'
 
 // System
 import SystemSettings         from './views/Features/SystemSettings/SystemSettings'
@@ -74,6 +78,10 @@ const routes = [
 
   // Support
   { path: '/support',                      element: SupportTickets,           roles: ['SuperAdmin', 'Admin'] },
+  { path: '/help-center',                  element: HelpCenter,               roles: ['SuperAdmin', 'Admin'] },
+
+  // SaaS Management
+  { path: '/saas',                         element: SaasManagement,           roles: ['SuperAdmin', 'Admin'] },
 
   // System
   { path: '/settings',                     element: SystemSettings,           roles: ['SuperAdmin', 'Admin'] },

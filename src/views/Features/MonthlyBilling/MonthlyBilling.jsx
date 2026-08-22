@@ -111,7 +111,7 @@ const MonthlyBilling = () => {
       render: (_, __, i) => (page - 1) * limit + i + 1,
     },
     {
-      title: 'School',
+      title: 'Franchise',
       key: 'school',
       render: (_, row) => {
         const s = row.tenantDetails
@@ -495,9 +495,9 @@ const MonthSummaryStrip = ({ bills }) => {
               </div>
             </div>
 
-            {/* Total schools */}
+            {/* Total franchises */}
             <div className="mt-2 text-center text-[10px] text-gray-400">
-              {g.total} school{g.total !== 1 ? 's' : ''}
+              {g.total} franchise{g.total !== 1 ? 's' : ''}
             </div>
           </div>
         )

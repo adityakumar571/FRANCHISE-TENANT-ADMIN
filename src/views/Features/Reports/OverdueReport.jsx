@@ -119,7 +119,7 @@ const OverdueReport = () => {
       render: (_, __, i) => i + 1,
     },
     {
-      title: 'School',
+      title: 'Franchise',
       key: 'school',
       render: (_, row) => {
         const s = row.tenantDetails

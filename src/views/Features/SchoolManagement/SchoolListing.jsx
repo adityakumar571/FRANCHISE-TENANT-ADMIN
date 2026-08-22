@@ -104,9 +104,7 @@ const SchoolListing = () => {
               </span>
             )}
           </div>
-          {row.studentLimit > 0 && (
-            <span className="text-[10px] text-gray-400">{row.studentLimit.toLocaleString()} students</span>
-          )}
+
         </div>
       </Tooltip>
     )

@@ -69,7 +69,7 @@ const GenerateSessionModal = ({ open, schools, onClose, onSuccess }) => {
   useEffect(() => { if (!open) { setTenantId(''); setStudentCount('') } }, [open])
 
   const handleSubmit = async () => {
-    if (!tenantId) { toast.error('Select a school'); return }
+    if (!tenantId) { toast.error('Select a franchise'); return }
     setLoading(true)
     try {
       await postRequest({
@@ -94,8 +94,8 @@ const GenerateSessionModal = ({ open, schools, onClose, onSuccess }) => {
       title={<div className="flex items-center gap-2 text-[#0c3b73]"><BookOpen size={15} />Generate Session Bill</div>}>
       <div className="space-y-4 mt-3">
         <div>
-          <label className="text-xs font-medium text-gray-600 block mb-1">School <span className="text-red-500">*</span></label>
-          <Select showSearch optionFilterProp="label" placeholder="Select school…" className="w-full" value={tenantId || undefined}
+          <label className="text-xs font-medium text-gray-600 block mb-1">Franchise <span className="text-red-500">*</span></label>
+          <Select showSearch optionFilterProp="label" placeholder="Select franchise…" className="w-full" value={tenantId || undefined}
             onChange={setTenantId} options={schools.map(s => ({ value: s._id, label: s.schoolName }))} />
         </div>
         <div>
@@ -175,7 +175,7 @@ const PaymentModal = ({ open, bill, onClose, onSuccess }) => {
         {/* School + Session info */}
         <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 flex justify-between items-center">
           <div>
-            <p className="text-xs text-gray-400">School</p>
+            <p className="text-xs text-gray-400">Franchise</p>
             <p className="font-semibold text-gray-800 text-sm">{bill.tenantDetails?.schoolName || '—'}</p>
           </div>
           <div className="text-right">
@@ -461,7 +461,7 @@ export default function SessionBilling() {
   const columns = [
     { title: 'Sr.', key: 'sr', align: 'center', width: 50, render: (_, __, i) => (page - 1) * limit + i + 1 },
     {
-      title: 'School', key: 'school',
+      title: 'Franchise', key: 'school',
       render: (_, row) => (
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-[#0c3b73]/10 flex items-center justify-center text-xs font-bold text-[#0c3b73] flex-shrink-0">
@@ -561,7 +561,7 @@ export default function SessionBilling() {
       {/* Report summary cards */}
       {report && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          <SummaryCard icon={Users} label="Total Schools" value={report.totalSchools} color="text-[#0c3b73]" bgColor="bg-blue-50" />
+          <SummaryCard icon={Users} label="Total Franchises" value={report.totalSchools} color="text-[#0c3b73]" bgColor="bg-blue-50" />
           <SummaryCard icon={IndianRupee} label="Total Billed" value={`₹${(report.totalBilledAmount/1000).toFixed(0)}k`} color="text-gray-700" bgColor="bg-gray-100" />
           <SummaryCard icon={CheckCircle} label="Collected" value={`₹${(report.totalCollected/1000).toFixed(0)}k`} sub={`${report.collectionPercent}% collected`} color="text-green-600" bgColor="bg-green-50" />
           <SummaryCard icon={AlertCircle} label="Total Due" value={`₹${(report.totalDue/1000).toFixed(0)}k`} color="text-red-500" bgColor="bg-red-50" />
@@ -575,7 +575,7 @@ export default function SessionBilling() {
         <div className="flex items-center gap-2 flex-1 min-w-[200px] border border-gray-300 rounded-lg px-3 h-9">
           <Search size={14} className="text-gray-400 flex-shrink-0" />
           <input value={searchText} onChange={e => setSearchText(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            placeholder="Search school name…" className="flex-1 text-sm outline-none bg-transparent" />
+            placeholder="Search franchise name…" className="flex-1 text-sm outline-none bg-transparent" />
           {searchText && <button onClick={() => { setSearchText(''); fetchBills() }}><X size={13} className="text-gray-400" /></button>}
         </div>
         <Select allowClear placeholder="All statuses" value={filterStatus || undefined} onChange={v => { setFilterStatus(v || ''); setPage(1) }}

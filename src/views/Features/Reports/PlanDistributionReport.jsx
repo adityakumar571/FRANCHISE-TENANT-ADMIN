@@ -146,7 +146,7 @@ const PlanDistributionReport = () => {
       render: (_, __, i) => i + 1,
     },
     {
-      title: 'School',
+      title: 'Franchise',
       render: (_, row) => (
         <div>
           <div style={{ fontWeight: 600, fontSize: 13, color: '#111' }}>{row.tenantDetails?.schoolName || '—'}</div>
@@ -255,7 +255,7 @@ const PlanDistributionReport = () => {
 
       {/* Distribution tiles */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginBottom: 16 }}>
-        <DistTile label="Total Schools"  count={total}     total={total} color="#185FA5" bg="#EAF2FF" Icon={Users} />
+        <DistTile label="Total Franchises"  count={total}     total={total} color="#185FA5" bg="#EAF2FF" Icon={Users} />
         <DistTile label="Active Plans"   count={active}    total={total} color="#16a34a" bg="#dcfce7" Icon={CreditCard} />
         <DistTile label="On Trial"       count={trial}     total={total} color="#2563eb" bg="#dbeafe" Icon={Zap} />
         <DistTile label="Expired"        count={expired}   total={total} color="#dc2626" bg="#fee2e2" Icon={AlertTriangle} />

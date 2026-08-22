@@ -244,7 +244,7 @@ const SubscriptionModal = ({ open, onClose, editData, planType = 'Plan', refresh
             />
             {Number(form.trialDays) > 0 && Number(form.studentLimit) > 0 && (
               <InfoBox color="amber">
-                <strong>Free Trial:</strong> New schools will get <strong>{form.trialDays} days</strong> free trial with a limit of <strong>{Number(form.studentLimit).toLocaleString('en-IN')} students</strong>.
+                <strong>Free Trial:</strong> New franchises will get <strong>{form.trialDays} days</strong> free trial with a limit of <strong>{Number(form.studentLimit).toLocaleString('en-IN')} students</strong>.
               </InfoBox>
             )}
             {Number(form.trialDays) > 0 && !Number(form.studentLimit) && (

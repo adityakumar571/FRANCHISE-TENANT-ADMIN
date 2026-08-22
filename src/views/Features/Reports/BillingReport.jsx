@@ -367,7 +367,7 @@ const GenerateBillsModal = ({ open, onClose, onSuccess }) => {
               <table className="w-full text-xs">
                 <thead className="sticky top-0">
                   <tr style={{ backgroundColor: '#0c3b73' }}>
-                    <th className="text-left text-white px-3 py-2 font-medium">School</th>
+                    <th className="text-left text-white px-3 py-2 font-medium">Franchise</th>
                     <th className="text-center text-white px-3 py-2 font-medium w-32">Students (live)</th>
                     <th className="text-center text-white px-3 py-2 font-medium w-28">Sub. Addons</th>
                     <th className="text-right text-white px-3 py-2 font-medium w-28">Amount</th>
@@ -745,7 +745,7 @@ const BillingReport = () => {
       render: (_, __, i) => (page - 1) * limit + i + 1,
     },
     {
-      title: 'School',
+      title: 'Franchise',
       key: 'school',
       render: (_, row) => {
         const s = row.tenantDetails
@@ -901,11 +901,11 @@ const BillingReport = () => {
       {/* KPI Cards */}
       {summary && (
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
-          <KPICard label="Total Schools" value={summary.totalSchools || 0} icon={School} color="blue" />
+          <KPICard label="Total Franchises" value={summary.totalSchools || 0} icon={School} color="blue" />
           <KPICard label="Total Billed" value={`₹${(summary.totalAmount || 0).toLocaleString('en-IN')}`} icon={IndianRupee} color="violet" />
-          <KPICard label="Collected" value={`₹${(summary.collectedAmount || 0).toLocaleString('en-IN')}`} sub={`${summary.paidCount || 0} schools paid`} icon={CheckCircle} color="green" />
-          <KPICard label="Outstanding" value={`₹${(summary.pendingAmount || 0).toLocaleString('en-IN')}`} sub={`${summary.unpaidCount || 0} schools pending`} icon={XCircle} color="red" />
-          <KPICard label="Collection Rate" value={`${collectionRate}%`} sub={`${summary.paidCount || 0}/${summary.totalSchools || 0} schools`} icon={TrendingUp} color="amber" />
+          <KPICard label="Collected" value={`₹${(summary.collectedAmount || 0).toLocaleString('en-IN')}`} sub={`${summary.paidCount || 0} franchises paid`} icon={CheckCircle} color="green" />
+          <KPICard label="Outstanding" value={`₹${(summary.pendingAmount || 0).toLocaleString('en-IN')}`} sub={`${summary.unpaidCount || 0} franchises pending`} icon={XCircle} color="red" />
+          <KPICard label="Collection Rate" value={`${collectionRate}%`} sub={`${summary.paidCount || 0}/${summary.totalSchools || 0} franchises`} icon={TrendingUp} color="amber" />
         </div>
       )}
 
@@ -932,7 +932,7 @@ const BillingReport = () => {
             </Select>
           </div>
           <div>
-            <label className="text-xs font-medium text-gray-600 block mb-1">School</label>
+            <label className="text-xs font-medium text-gray-600 block mb-1">Franchise</label>
             <Select
               allowClear showSearch placeholder="All schools"
               value={selectedSchool} onChange={setSelectedSchool}

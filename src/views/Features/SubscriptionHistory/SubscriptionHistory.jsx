@@ -238,7 +238,7 @@ const SubscriptionHistory = () => {
       render: (_, __, i) => (page - 1) * limit + i + 1,
     },
     {
-      title: 'School',
+      title: 'Franchise',
       key: 'school',
       render: (_, row) => {
         const school = row.tenantDetails
@@ -448,7 +448,7 @@ const SubscriptionHistory = () => {
             <CreditCard size={20} className="text-[#e24028]" />
             Subscription History
           </h1>
-          <p className="text-sm text-gray-500">View and manage all school subscription records</p>
+          <p className="text-sm text-gray-500">View and manage all franchise subscription records</p>
         </div>
         <button
           onClick={() => setIsAddModalOpen(true)}

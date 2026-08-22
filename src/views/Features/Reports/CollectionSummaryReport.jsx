@@ -227,7 +227,7 @@ const CollectionSummaryReport = () => {
 
       {/* KPI row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 12, marginBottom: 16 }}>
-        <KPI label="Total Schools"    value={totalSchools}                                Icon={School}       color="#185FA5" bg="#EAF2FF" />
+        <KPI label="Total Franchises"    value={totalSchools}                                Icon={School}       color="#185FA5" bg="#EAF2FF" />
         <KPI label="Total Billed"     value={`₹${totalBilled.toLocaleString('en-IN')}`}   Icon={IndianRupee}  color="#185FA5" bg="#EAF2FF" />
         <KPI label="Collected"        value={`₹${totalCollected.toLocaleString('en-IN')}`} Icon={CheckCircle} color="#16a34a" bg="#dcfce7" />
         <KPI label="Outstanding"      value={`₹${totalDue.toLocaleString('en-IN')}`}       Icon={AlertCircle} color="#dc2626" bg="#fee2e2" />

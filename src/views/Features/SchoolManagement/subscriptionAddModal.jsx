@@ -116,7 +116,7 @@ const SchoolSelect = ({ value, onChange, options, loading, error }) => {
               flexShrink:0 }}>{sel.sub}</span>
           </div>
         ) : (
-          <span style={{ color: C.textMuted }}>{loading ? 'Loading…' : 'Select a school'}</span>
+          <span style={{ color: C.textMuted }}>{loading ? 'Loading…' : 'Select a franchise'}</span>
         )}
         {loading
           ? <Loader2 size={13} color={C.textMuted} style={{ animation:'spin 1s linear infinite', marginLeft:6 }} />
@@ -132,7 +132,7 @@ const SchoolSelect = ({ value, onChange, options, loading, error }) => {
             <div style={{ padding:8, borderBottom:`1px solid ${C.border}` }}>
               <input autoFocus type="text" value={q}
                 onChange={e => setQ(e.target.value)}
-                placeholder="Search school name…"
+                placeholder="Search franchise name…"
                 style={{ width:'100%', height:32, padding:'0 10px', fontSize:12,
                   border:`1.5px solid ${C.border}`, borderRadius:6,
                   background: C.bgSoft, color: C.textDark, outline:'none',
@@ -388,7 +388,7 @@ const SummaryPanel = ({ school, plan, tab, studentCount, billingMonth, paidStatu
         <Shield size={22} color={C.borderHover} />
       </div>
       <p style={{ fontSize:13, fontWeight:600, color: C.textSoft, margin:0 }}>Summary will appear here</p>
-      <p style={{ fontSize:11, color: C.textMuted, margin:0 }}>Select a school and plan to continue</p>
+      <p style={{ fontSize:11, color: C.textMuted, margin:0 }}>Select a franchise and plan to continue</p>
     </div>
   )
 
@@ -555,7 +555,7 @@ const SubscriptionModal = ({ open, onClose, refresh, preSelectedSchoolId = null 
 
   const validate = () => {
     const e = {}
-    if (!selSchool) e.school = 'Select a school'
+    if (!selSchool) e.school = 'Select a franchise'
     if (!selPlan)   e.plan   = 'Select a plan'
     if (activeTab === 'Plan') {
       if (!count || Number(count) < 1) e.studentCount = 'Enter student count'
@@ -611,7 +611,7 @@ const SubscriptionModal = ({ open, onClose, refresh, preSelectedSchoolId = null 
           <div>
             <p style={{ margin:0, fontSize:15, fontWeight:700, color: C.textDark, fontFamily: FONT }}>Assign Subscription</p>
             <p style={{ margin:0, fontSize:12, color: C.textMuted, fontWeight:400, fontFamily: FONT }}>
-              Configure and assign a plan or add-on to a school
+              Configure and assign a plan or add-on to a franchise
             </p>
           </div>
         </div>
@@ -624,7 +624,7 @@ const SubscriptionModal = ({ open, onClose, refresh, preSelectedSchoolId = null 
 
           {/* SCHOOL */}
           <div style={{ marginBottom:22 }}>
-            <Label required>School</Label>
+            <Label required>Franchise</Label>
             <SchoolSelect value={selSchool} loading={loadingSchools} error={errors.school}
               options={schoolOpts}
               onChange={v => { setSelSchool(v); setCount(''); setCountSrc(null); setErrors(p => ({ ...p, school: undefined })) }} />

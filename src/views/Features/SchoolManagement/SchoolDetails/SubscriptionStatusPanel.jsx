@@ -220,7 +220,7 @@ const SubscriptionStatusPanel = ({ tenantId, onAssignPlan, onAddAddon }) => {
         <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-4 text-center">
           <XCircle size={28} className="text-gray-300 mx-auto mb-2" />
           <p className="text-sm font-medium text-gray-500">No Subscription Assigned</p>
-          <p className="text-xs text-gray-400 mt-1">School ko plan assign karo to activate karein</p>
+          <p className="text-xs text-gray-400 mt-1">Franchise ko plan assign karo to activate karein</p>
         </div>
 
         {onAssignPlan && (
@@ -420,7 +420,7 @@ const SubscriptionStatusPanel = ({ tenantId, onAssignPlan, onAddAddon }) => {
         <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-red-50 border border-red-200">
           <XCircle size={14} className="text-red-500 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-red-700 font-medium">
-            Subscription expire ho chuki hai. School ka access blocked ho sakta hai.
+            Subscription expire ho chuki hai. Franchise ka access blocked ho sakta hai.
           </p>
         </div>
       )}

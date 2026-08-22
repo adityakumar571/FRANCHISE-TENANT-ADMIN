@@ -155,7 +155,7 @@ const SessionBillingReport = () => {
       render: (_, __, i) => i + 1,
     },
     {
-      title: 'School',
+      title: 'Franchise',
       render: (_, row) => {
         const s = row.tenantDetails
         return (

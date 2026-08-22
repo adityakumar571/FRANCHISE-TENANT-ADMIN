@@ -42,7 +42,7 @@ const MonthlyBillingFilters = ({ schools = [], filters, onApply, onClear }) => {
 
         {/* School filter */}
         <div className="flex flex-col gap-1 min-w-[200px] flex-1">
-          <label className="text-xs font-medium text-gray-500">School</label>
+          <label className="text-xs font-medium text-gray-500">Franchise</label>
           <Select
             showSearch
             allowClear

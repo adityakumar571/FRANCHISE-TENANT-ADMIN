@@ -133,7 +133,7 @@ const SchoolBillingReport = () => {
         setAnnualSummary({ totalBilled, totalPaid, totalPending })
       })
       .catch(() => {
-        toast.error('Failed to load school report')
+        toast.error('Failed to load franchise report')
         setData([])
         setAnnualSummary(null)
       })
@@ -287,9 +287,9 @@ const SchoolBillingReport = () => {
           <div>
             <h1 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
               <School size={20} className="text-[#e24028]" />
-              School-wise Billing Report
+              Franchise-wise Billing Report
             </h1>
-            <p className="text-sm text-gray-500">Annual payment history per school</p>
+            <p className="text-sm text-gray-500">Annual payment history per franchise</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -308,9 +308,9 @@ const SchoolBillingReport = () => {
       <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4">
         <div className="flex flex-wrap gap-3 items-end">
           <div>
-            <label className="text-xs font-medium text-gray-600 block mb-1">School</label>
+            <label className="text-xs font-medium text-gray-600 block mb-1">Franchise</label>
             <Select
-              showSearch placeholder="Select school"
+              showSearch placeholder="Select franchise"
               value={selectedSchool}
               onChange={(v) => {
                 setSelectedSchool(v)
@@ -349,7 +349,7 @@ const SchoolBillingReport = () => {
             )}
             <div>
               <h2 className="text-base font-semibold text-gray-800">{selectedSchoolData.schoolName}</h2>
-              <p className="text-xs text-gray-400">{selectedSchoolData.subdomain}.schoolcloudx.com · Annual Report {selectedYear}</p>
+              <p className="text-xs text-gray-400">{selectedSchoolData.subdomain}.franchisecloudx.com · Annual Report {selectedYear}</p>
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -376,7 +376,7 @@ const SchoolBillingReport = () => {
           rowKey={(r) => r._id || r.billingMonth}
           loading={loading}
           pagination={false}
-          locale={{ emptyText: <Empty description="No billing records found for this school" /> }}
+          locale={{ emptyText: <Empty description="No billing records found for this franchise" /> }}
           scroll={{ x: 'max-content' }}
           rowClassName={(row) =>
             row.status === 'OVERDUE' ? 'bg-red-50/40' :

@@ -165,7 +165,7 @@ const AssignTrialModal = ({ open, school, onClose, onSuccess }) => {
       <div className="max-h-[72vh] overflow-y-auto pr-1 mt-3">
 
         {/* ── School Info ── */}
-        <SectionHeader title="School" />
+        <SectionHeader title="Franchise" />
         <SectionBody>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center flex-shrink-0 overflow-hidden">

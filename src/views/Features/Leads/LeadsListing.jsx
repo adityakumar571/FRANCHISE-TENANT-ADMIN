@@ -142,7 +142,7 @@ const LeadsListing = () => {
       },
     },
     {
-      title: 'School Name',
+      title: 'Franchise Name',
       key: 'schoolName',
       render: (_, row) =>
         row.status === 'COMPLETED' && row.schoolName
@@ -311,7 +311,7 @@ const LeadsListing = () => {
               <p className="font-semibold text-gray-800">{deleteTarget.contactName || deleteTarget.schoolName || '—'}</p>
               <p className="text-gray-500 text-xs">{deleteTarget.schoolEmail}</p>
               {deleteTarget.subdomain && (
-                <p className="text-gray-400 text-xs font-mono">{deleteTarget.subdomain}.schoolcloudx.com</p>
+                <p className="text-gray-400 text-xs font-mono">{deleteTarget.subdomain}.franchisecloudx.com</p>
               )}
               {deleteTarget.status === 'COMPLETED' && (
                 <p className="text-red-500 text-xs mt-2 font-medium">

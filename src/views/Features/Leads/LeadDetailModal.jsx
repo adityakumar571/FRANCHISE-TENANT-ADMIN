@@ -82,7 +82,7 @@ const LeadDetailModal = ({ open, data, onClose }) => {
         <Row icon={<Phone size={15} />}       label="Mobile No"  value={data.mobileNo || data.schoolContact} />
         <Row icon={<MessageCircle size={15} />} label="WhatsApp" value={data.whatsappNo} />
         <Row icon={<Mail size={15} />}        label="Email"      value={data.schoolEmail} />
-        <Row icon={<Globe size={15} />}       label="Subdomain"  value={data.subdomain ? `${data.subdomain}.schoolcloudx.com` : null} mono />
+        <Row icon={<Globe size={15} />}       label="Subdomain"  value={data.subdomain ? `${data.subdomain}.franchisecloudx.com` : null} mono />
       </div>
 
       {/* Step 2 — School Info (only if filled) */}
