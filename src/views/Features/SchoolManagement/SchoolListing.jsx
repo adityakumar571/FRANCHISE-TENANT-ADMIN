@@ -21,7 +21,6 @@ const SchoolListing = () => {
   const [limit, setLimit] = useState(10)
   const [total, setTotal] = useState(0)
 
-  const [appliedFilters, setAppliedFilters] = useState({ search: '', isActive: null })
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSubModalOpen, setIsSubModalOpen] = useState(false)
   const [selectedItem, setSelectedItem] = useState(null)
@@ -30,9 +29,13 @@ const SchoolListing = () => {
   const [quickLoginSchool, setQuickLoginSchool] = useState(null)
   const [assignTrialSchool, setAssignTrialSchool] = useState(null)
 
+  const [error, setError] = useState(null)
+  const [appliedFilters, setAppliedFilters] = useState({ search: '', isActive: null })
+
   /* ── Fetch ── */
   const fetchSchools = () => {
     setLoading(true)
+    setError(null)
     const params = { page, limit, isPagination: true }
     if (appliedFilters.search) params.search = appliedFilters.search
     if (appliedFilters.isActive !== null) params.isActive = appliedFilters.isActive
@@ -42,7 +45,11 @@ const SchoolListing = () => {
         setData(res?.data?.data?.tenants || res?.data?.data?.list || [])
         setTotal(res?.data?.data?.total || res?.data?.data?.pagination?.totalRows || 0)
       })
-      .catch(() => toast.error('Failed to load schools'))
+      .catch((err) => {
+        const msg = err?.response?.data?.message || err?.message || 'Failed to load franchises'
+        setError(msg)
+        toast.error(msg)
+      })
       .finally(() => setLoading(false))
   }
 
@@ -161,7 +168,7 @@ const SchoolListing = () => {
         columns={COLUMNS}
         data={data}
         loading={loading}
-        emptyText="No schools found"
+        emptyText={error ? `⚠ ${error}` : 'No franchises found'}
         page={page}
         limit={limit}
         total={total}
