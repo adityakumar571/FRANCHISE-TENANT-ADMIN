@@ -50,7 +50,7 @@ const SchoolFilters = ({ onApply, onClear, appliedFilters }) => {
             type="text"
             value={draft.search}
             onChange={(e) => setDraft((p) => ({ ...p, search: e.target.value }))}
-            placeholder="School name..."
+            placeholder="Franchise name..."
             className="h-[32px] px-3 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#0c3b73] focus:border-[#0c3b73]"
           />
         </div>

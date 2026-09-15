@@ -160,10 +160,10 @@ export default function AdminDashboard() {
         <div style={card({ display: 'flex', flexDirection: 'column' })}>
           <p style={{ fontSize: '13px', fontWeight: 700, color: '#111827', margin: '0 0 8px' }}>Franchise Status</p>
           <div style={{ position: 'relative', flex: 1 }}>
-            <ResponsiveContainer width="100%" height={140}>
+            <ResponsiveContainer width="100%" height={160}>
               <PieChart>
-                <Pie data={PIE_DATA} cx="50%" cy="50%" innerRadius={42} outerRadius={60}
-                  dataKey="value" paddingAngle={2} strokeWidth={0} labelLine={false} label={PieLabel}>
+                <Pie data={PIE_DATA} cx="50%" cy="50%" innerRadius={50} outerRadius={72}
+                  dataKey="value" paddingAngle={3} strokeWidth={0}>
                   {PIE_DATA.map((p, i) => <Cell key={i} fill={p.color} />)}
                 </Pie>
                 <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', fontSize: '11px' }} />
