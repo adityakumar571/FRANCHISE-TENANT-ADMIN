@@ -25,6 +25,7 @@ import {
   AlertCircle,
   CalendarDays,
   PieChart,
+  Truck,
 } from 'lucide-react'
 import { AppContext } from '../Context/AppContext'
 
@@ -43,6 +44,7 @@ const NAV_ITEMS = [
         ],
       },
       { label: 'Subscription Plans',  to: '/subscription-plans',             icon: CreditCard },
+      { label: 'Suppliers',          to: '/suppliers',                      icon: Truck },
       { label: 'Free Trial Packages', to: '/free-trial-packages',            icon: Gift },
       { label: 'Subscription History',to: '/subscription-history',           icon: Receipt },
       {

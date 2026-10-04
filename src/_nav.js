@@ -7,7 +7,7 @@ import {
   Users, LifeBuoy, HelpCircle, MessageSquare,
   Bell, Gift, BarChart2, TrendingUp,
   Settings, FileText, CreditCard as PayIcon,
-  UserCircle, Database,
+  UserCircle, Database, Truck,
 } from 'lucide-react'
 import { AppContext } from './Context/AppContext'
 
@@ -19,7 +19,7 @@ const useNav = () => {
   const role = user?.role
   if (!role) return []
 
-  return [
+  const navigation = [
     {
       component: CNavItem,
       name: 'Dashboard',
@@ -41,6 +41,12 @@ const useNav = () => {
       name: 'Subscription Plans',
       to: '/subscription-plans',
       icon: <CreditCard className={`me-3 ${Y}`} style={SZ} />,
+    },
+    {
+      component: CNavItem,
+      name: 'Suppliers',
+      to: '/suppliers',
+      icon: <Truck className={`me-3 ${Y}`} style={SZ} />,
     },
     {
       component: CNavItem,
@@ -109,6 +115,9 @@ const useNav = () => {
       icon: <Database className={`me-3 ${Y}`} style={SZ} />,
     },
   ]
+
+  console.log('Navigation items:', navigation.length, 'User role:', role)
+  return navigation
 }
 
 export default useNav

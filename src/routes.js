@@ -31,6 +31,8 @@ const UsersRoles              = l(() => import('./views/Features/UsersRoles/User
 const BillingReport           = l(() => import('./views/Features/Reports/BillingReport'))
 const SchoolBillingReport     = l(() => import('./views/Features/Reports/SchoolBillingReport'))
 const OverdueReport           = l(() => import('./views/Features/Reports/OverdueReport'))
+const SessionBillingReport    = l(() => import('./views/Features/Reports/SessionBillingReport'))
+const CollectionSummaryReport = l(() => import('./views/Features/Reports/CollectionSummaryReport'))
 const PlanDistributionReport  = l(() => import('./views/Features/Reports/PlanDistributionReport'))
 
 // Support / Help
@@ -43,6 +45,9 @@ const SaasManagement          = l(() => import('./views/Features/SaasManagement/
 // System
 const SystemSettings          = l(() => import('./views/Features/SystemSettings/SystemSettings'))
 const ActivityLogs            = l(() => import('./views/Features/ActivityLogs/ActivityLogs'))
+
+// Suppliers
+const SupplierManagement      = l(() => import('./views/Features/Suppliers/SupplierManagement'))
 
 // Other
 const FAQListing              = l(() => import('./views/Features/FAQ/FAQListing'))
@@ -76,6 +81,8 @@ const routes = [
   { path: '/reports/billing',                    element: BillingReport,            roles: ['SuperAdmin', 'Admin'] },
   { path: '/reports/school',                     element: SchoolBillingReport,      roles: ['SuperAdmin', 'Admin'] },
   { path: '/reports/overdue',                    element: OverdueReport,            roles: ['SuperAdmin', 'Admin'] },
+  { path: '/reports/session-billing',            element: SessionBillingReport,     roles: ['SuperAdmin', 'Admin'] },
+  { path: '/reports/collection-summary',         element: CollectionSummaryReport,  roles: ['SuperAdmin', 'Admin'] },
   { path: '/reports/plan-distribution',          element: PlanDistributionReport,   roles: ['SuperAdmin', 'Admin'] },
 
   // Support
@@ -88,6 +95,9 @@ const routes = [
   // System
   { path: '/settings',                           element: SystemSettings,           roles: ['SuperAdmin', 'Admin'] },
   { path: '/activity-logs',                      element: ActivityLogs,             roles: ['SuperAdmin', 'Admin'] },
+
+  // Suppliers
+  { path: '/suppliers',                          element: SupplierManagement,       roles: ['SuperAdmin', 'Admin'] },
 
   // Other
   { path: '/faq',                                element: FAQListing,               roles: ['SuperAdmin', 'Admin'] },

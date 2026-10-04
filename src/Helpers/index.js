@@ -42,6 +42,11 @@ const getHeaders = () => {
   const tok = Cookies.get('multitenant')
   const headers = {}
   if (tok) headers['Authorization'] = `Bearer ${tok}`
+  
+  // Add tenant ID from localStorage or environment
+  const tenantId = localStorage.getItem('x-tenant-id') || import.meta.env.VITE_TENANT_ID
+  if (tenantId) headers['x-tenant-id'] = tenantId
+  
   return headers
 }
 
