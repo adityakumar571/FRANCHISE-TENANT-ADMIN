@@ -467,11 +467,6 @@ export default function Dashboard() {
                   <p className="text-2xl font-medium text-slate-800">{totalSections}</p>
                   <p className="text-xs font-medium text-slate-500 mt-2">Sections</p>
                 </div>
-                <div className="rounded-2xl bg-slate-50 p-2 text-center">
-                  <Database className="w-7 h-7 text-violet-600 mx-auto mb-1" />
-                  <p className="text-2xl font-medium text-slate-800">{subscription?.usedStudents || 0}</p>
-                  <p className="text-xs font-medium text-slate-500 mt-2">Used Capacity</p>
-                </div>
               </div>
             </div>
           </div>

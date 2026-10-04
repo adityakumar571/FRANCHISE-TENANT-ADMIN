@@ -50,8 +50,6 @@ const NAV_ITEMS = [
           { label: 'Billing Report',       to: '/reports/billing' },
           { label: 'Franchise-wise Report',to: '/reports/school' },
           { label: 'Overdue Payments',     to: '/reports/overdue' },
-          { label: 'Session Billing',      to: '/reports/session-billing' },
-          { label: 'Collection Summary',   to: '/reports/collection-summary' },
           { label: 'Plan Distribution',    to: '/reports/plan-distribution' },
         ],
       },

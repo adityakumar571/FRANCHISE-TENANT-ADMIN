@@ -53,26 +53,6 @@ const DistTile = ({ label, count, total, color, bg, Icon }) => {
   )
 }
 
-// ── Usage bar ─────────────────────────────────────────────────
-const UsageBar = ({ used, total }) => {
-  if (!total) return <span style={{ fontSize: 11, color: '#9ca3af' }}>Unlimited</span>
-  const pct = Math.min(Math.round((used / total) * 100), 100)
-  const color = pct >= 90 ? '#dc2626' : pct >= 70 ? '#f59e0b' : '#16a34a'
-  return (
-    <Tooltip title={`${used} / ${total} students (${pct}%)`}>
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-          <span style={{ fontSize: 10, color: '#9ca3af' }}>{used} / {total}</span>
-          <span style={{ fontSize: 10, fontWeight: 700, color }}>{pct}%</span>
-        </div>
-        <div style={{ height: 5, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden', width: 100 }}>
-          <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: 4 }} />
-        </div>
-      </div>
-    </Tooltip>
-  )
-}
-
 // ── Main Component ────────────────────────────────────────────
 const PlanDistributionReport = () => {
   const [data, setData]         = useState([])
@@ -124,9 +104,6 @@ const PlanDistributionReport = () => {
       'Start Date':    r.currentPlan?.startDate ? dayjs(r.currentPlan.startDate).format('DD MMM YYYY') : '—',
       'End Date':      r.currentPlan?.endDate   ? dayjs(r.currentPlan.endDate).format('DD MMM YYYY')   : '—',
       'Days Left':     r.currentPlan?.endDate   ? Math.max(0, dayjs(r.currentPlan.endDate).diff(dayjs(), 'day')) : '—',
-      'Student Limit': r.totalStudentLimit || 0,
-      'Used Students': r.usedStudents || 0,
-      'Usage %':       r.totalStudentLimit > 0 ? `${Math.round((r.usedStudents / r.totalStudentLimit) * 100)}%` : 'Unlimited',
     }))
     const ws = XLSX.utils.json_to_sheet(rows)
     const wb = XLSX.utils.book_new()
@@ -199,13 +176,6 @@ const PlanDistributionReport = () => {
           </div>
         )
       },
-    },
-    {
-      title: 'Student Usage',
-      align: 'center',
-      render: (_, row) => (
-        <UsageBar used={row.usedStudents || 0} total={row.totalStudentLimit || 0} />
-      ),
     },
     {
       title: 'Payment',

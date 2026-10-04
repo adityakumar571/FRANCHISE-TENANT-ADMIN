@@ -15,16 +15,10 @@
  *    billingCycle     : string
  *    endDate          : string | null
  *    daysLeft         : number | null
- *    totalStudentLimit: number
- *    usedStudents     : number
- *    remaining        : number | "unlimited"
- *    usagePercent     : number          — 0-100
  *    paidStatus       : string          — PAID | UNPAID | PENDING | OVERDUE
  *    dueDate          : string | null
- *    warnings         : string[]        — EXPIRING_SOON | EXPIRED | LIMIT_CRITICAL |
- *                                         LIMIT_WARNING | PAYMENT_OVERDUE | PAYMENT_UNPAID |
- *                                         SESSION_BILLING_OVERDUE | ADMISSIONS_RESTRICTED |
- *                                         REGISTRATION_RESTRICTED | TRIAL_EXPIRING_SOON
+ *    warnings         : string[]        — EXPIRING_SOON | EXPIRED | PAYMENT_OVERDUE | 
+ *                                         PAYMENT_UNPAID | TRIAL_EXPIRING_SOON
  *    refresh          : () => void      — manual refresh
  *  }
  */
@@ -79,10 +73,6 @@ export const useSubscriptionStatus = () => {
     billingCycle:      data?.billingCycle     ?? null,
     endDate:           data?.endDate          ?? null,
     daysLeft:          data?.daysLeft         ?? null,
-    totalStudentLimit: data?.totalStudentLimit ?? 0,
-    usedStudents:      data?.usedStudents     ?? 0,
-    remaining:         data?.remaining        ?? 0,
-    usagePercent:      data?.usagePercent     ?? 0,
     paidStatus:        data?.paidStatus       ?? null,
     dueDate:           data?.dueDate          ?? null,
     warnings:          data?.warnings         ?? [],

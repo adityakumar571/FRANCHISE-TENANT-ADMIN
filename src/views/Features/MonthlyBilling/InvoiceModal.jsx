@@ -24,9 +24,9 @@ const InvoiceDoc = React.forwardRef(({ invoice }, ref) => {
   const hasTax   = (invoice.taxRate || 0) > 0
 
   const lineItems = invoice.lineItems?.length > 0 ? invoice.lineItems : [
-    { type:'BASE_PLAN', description:`Base Plan — up to ${invoice.configSnapshot?.baseStudentLimit||350} students`, quantity:1, unitPrice:invoice.baseAmount||0, amount:invoice.baseAmount||0 },
-    ...(invoice.addonSlots>0?[{ type:'EXTRA_STUDENTS', description:`Extra Students — ${invoice.addonSlots} slot(s)`, quantity:invoice.addonSlots, unitPrice:invoice.configSnapshot?.addonSlotPrice||100, amount:invoice.slotAddonAmount||0 }]:[]),
-    ...(invoice.subscriptionAddonsSnapshot||[]).map(a=>({ type:'SUBSCRIPTION_ADDON', description:`${a.name}${a.quantity>1?` ×${a.quantity}`:''} — +${a.studentLimit} students`, quantity:a.quantity||1, unitPrice:a.price||0, amount:a.monthlyPrice||0 })),
+    { type:'BASE_PLAN', description:`Base Plan`, quantity:1, unitPrice:invoice.baseAmount||0, amount:invoice.baseAmount||0 },
+    ...(invoice.addonSlots>0?[{ type:'EXTRA_ADDONS', description:`Extra Addon Slots — ${invoice.addonSlots} slot(s)`, quantity:invoice.addonSlots, unitPrice:invoice.configSnapshot?.addonSlotPrice||100, amount:invoice.slotAddonAmount||0 }]:[]),
+    ...(invoice.subscriptionAddonsSnapshot||[]).map(a=>({ type:'SUBSCRIPTION_ADDON', description:`${a.name}${a.quantity>1?` ×${a.quantity}`:''}`, quantity:a.quantity||1, unitPrice:a.price||0, amount:a.monthlyPrice||0 })),
   ]
 
   const cell  = (w, align='left') => ({ padding:'9px 10px', fontSize:12, color:'#1e293b', borderBottom:'1px solid #e2e8f0', textAlign:align, width:w||'auto', fontFamily:FONT })
@@ -261,9 +261,9 @@ const InvoiceModal = ({ open, billId, onClose }) => {
     // Table
     const hasLI = (invoice.lineItems?.length||0)>0
     const rows = (hasLI ? invoice.lineItems : [
-      { type:'BASE_PLAN', description:`Base Plan — up to ${invoice.configSnapshot?.baseStudentLimit||350} students`, quantity:1, unitPrice:invoice.baseAmount||0, amount:invoice.baseAmount||0 },
-      ...(invoice.addonSlots>0?[{ type:'EXTRA_STUDENTS', description:`Extra Students — ${invoice.addonSlots} slot(s)`, quantity:invoice.addonSlots, unitPrice:invoice.configSnapshot?.addonSlotPrice||100, amount:invoice.slotAddonAmount||0 }]:[]),
-      ...(invoice.subscriptionAddonsSnapshot||[]).map(a=>({ type:'SUBSCRIPTION_ADDON', description:`${a.name}${a.quantity>1?` ×${a.quantity}`:''} — +${a.studentLimit} students`, quantity:a.quantity||1, unitPrice:a.price||0, amount:a.monthlyPrice||0 })),
+      { type:'BASE_PLAN', description:`Base Plan`, quantity:1, unitPrice:invoice.baseAmount||0, amount:invoice.baseAmount||0 },
+      ...(invoice.addonSlots>0?[{ type:'EXTRA_ADDONS', description:`Extra Addon Slots — ${invoice.addonSlots} slot(s)`, quantity:invoice.addonSlots, unitPrice:invoice.configSnapshot?.addonSlotPrice||100, amount:invoice.slotAddonAmount||0 }]:[]),
+      ...(invoice.subscriptionAddonsSnapshot||[]).map(a=>({ type:'SUBSCRIPTION_ADDON', description:`${a.name}${a.quantity>1?` ×${a.quantity}`:''}`, quantity:a.quantity||1, unitPrice:a.price||0, amount:a.monthlyPrice||0 })),
     ]).map((item,i)=>[item.description, typeLabel(item.type), item.quantity, `Rs.${Number(item.unitPrice||0).toLocaleString('en-IN')}`, `Rs.${Number(item.amount||0).toLocaleString('en-IN')}`])
 
     doc.autoTable({

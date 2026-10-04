@@ -6,9 +6,7 @@ import { getRequest, putRequest } from '../../../Helpers'
 
 const BillingConfigModal = ({ open, onClose }) => {
   const [config, setConfig] = useState({
-    baseStudentLimit: 350,
     basePrice: 1200,
-    addonSlotSize: 50,
     addonSlotPrice: 100,
   })
   const [loading, setLoading] = useState(false)
@@ -23,10 +21,8 @@ const BillingConfigModal = ({ open, onClose }) => {
         const d = r?.data?.data
         if (d) {
           setConfig({
-            baseStudentLimit: d.baseStudentLimit,
-            basePrice: d.basePrice,
-            addonSlotSize: d.addonSlotSize,
-            addonSlotPrice: d.addonSlotPrice,
+            basePrice: d.basePrice || 1200,
+            addonSlotPrice: d.addonSlotPrice || 100,
           })
         }
       })
@@ -39,7 +35,7 @@ const BillingConfigModal = ({ open, onClose }) => {
 
   const handleSave = async () => {
     // Basic validation
-    if (!config.baseStudentLimit || !config.basePrice || !config.addonSlotSize || !config.addonSlotPrice) {
+    if (!config.basePrice || !config.addonSlotPrice) {
       toast.error('All fields are required')
       return
     }
@@ -53,17 +49,6 @@ const BillingConfigModal = ({ open, onClose }) => {
     } finally {
       setLoading(false)
     }
-  }
-
-  /* Live example calculation */
-  const exampleStudents = [100, 350, 400, 500, 700]
-  const calcExample = (n) => {
-    const base = Number(config.basePrice) || 0
-    const limit = Number(config.baseStudentLimit) || 350
-    const slotSize = Number(config.addonSlotSize) || 50
-    const slotPrice = Number(config.addonSlotPrice) || 100
-    const addon = n > limit ? Math.ceil((n - limit) / slotSize) * slotPrice : 0
-    return base + addon
   }
 
   return (
@@ -93,18 +78,12 @@ const BillingConfigModal = ({ open, onClose }) => {
             </p>
           </div>
 
-          {/* Rule 1: Base */}
+          {/* Base Price */}
           <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 space-y-3">
-            <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">Base Plan Rule</p>
-            <div className="grid grid-cols-2 gap-3">
+            <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">Base Monthly Price</p>
+            <div className="grid grid-cols-1 gap-3">
               <Field
-                label="Student Limit (0 to X)"
-                value={config.baseStudentLimit}
-                onChange={(v) => set('baseStudentLimit', v)}
-                suffix="students"
-              />
-              <Field
-                label="Flat Price"
+                label="Monthly Franchise Fee"
                 value={config.basePrice}
                 onChange={(v) => set('basePrice', v)}
                 prefix="₹"
@@ -112,45 +91,24 @@ const BillingConfigModal = ({ open, onClose }) => {
               />
             </div>
             <p className="text-xs text-gray-400">
-              Schools with 0–{config.baseStudentLimit} students pay ₹{config.basePrice}/month
+              Fixed monthly price for franchise: ₹{config.basePrice}/month
             </p>
           </div>
 
-          {/* Rule 2: Addon */}
+          {/* Addon Price */}
           <div className="bg-gray-50 rounded-xl border border-gray-200 p-4 space-y-3">
-            <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">Addon Rule (Extra Students)</p>
-            <div className="grid grid-cols-2 gap-3">
+            <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">Addon Pricing</p>
+            <div className="grid grid-cols-1 gap-3">
               <Field
-                label="Slot Size"
-                value={config.addonSlotSize}
-                onChange={(v) => set('addonSlotSize', v)}
-                suffix="students"
-              />
-              <Field
-                label="Price per Slot"
+                label="Price per Addon"
                 value={config.addonSlotPrice}
                 onChange={(v) => set('addonSlotPrice', v)}
                 prefix="₹"
               />
             </div>
             <p className="text-xs text-gray-400">
-              For every {config.addonSlotSize} students above {config.baseStudentLimit}, charge ₹{config.addonSlotPrice} extra
+              Each addon costs: ₹{config.addonSlotPrice}
             </p>
-          </div>
-
-          {/* Live examples */}
-          <div className="bg-blue-50 border border-blue-100 rounded-xl p-3">
-            <p className="text-xs font-semibold text-[#0c3b73] mb-2">Live Preview</p>
-            <div className="grid grid-cols-5 gap-1.5">
-              {exampleStudents.map((n) => (
-                <div key={n} className="bg-white rounded-lg p-2 text-center border border-blue-100">
-                  <div className="text-[10px] text-gray-400">{n} students</div>
-                  <div className="text-xs font-bold text-[#0c3b73] mt-0.5">
-                    ₹{calcExample(n).toLocaleString('en-IN')}
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Actions */}

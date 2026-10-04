@@ -51,31 +51,6 @@ const StatusPill = ({ status, isTrial }) => {
   )
 }
 
-/* ── Usage Bar ───────────────────────────────────────────── */
-const UsageBar = ({ used, total }) => {
-  if (!total) return null
-  const pct     = Math.min(100, Math.round((used / total) * 100))
-  const barColor = pct >= 90 ? 'bg-red-500' : pct >= 75 ? 'bg-amber-400' : 'bg-emerald-500'
-  return (
-    <div className="w-full">
-      <div className="flex justify-between text-[11px] text-gray-500 mb-1">
-        <span>{fmt(used)} used</span>
-        <span className={pct >= 90 ? 'text-red-600 font-bold' : 'text-gray-500'}>{pct}%</span>
-      </div>
-      <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ${barColor}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <div className="flex justify-between text-[11px] mt-1">
-        <span className="text-gray-400">{fmt(total - used)} remaining</span>
-        <span className="text-gray-400">of {fmt(total)}</span>
-      </div>
-    </div>
-  )
-}
-
 /* ── effective addon price helper (mirrors backend logic) ────────── */
 const effectiveAddonPrice = (addonPrice, addonCycle, planCycle, quantity = 1) => {
   const unitPrice = (addonPrice || 0) * (quantity || 1)
@@ -112,9 +87,6 @@ const AddonRow = ({ addon, planCycle }) => {
         )}
       </div>
       <div className="flex items-center gap-3 flex-shrink-0 ml-2">
-        <span className="text-[11px] text-purple-600 font-semibold">
-          +{fmt(addon.studentLimit * (addon.quantity || 1))} students
-        </span>
         <div className="text-right">
           <span className="text-[11px] text-purple-700 font-bold">{fmtRs(effPrice)}</span>
           {/* Show original price if converted */}
@@ -183,11 +155,6 @@ const SubscriptionStatusPanel = ({ tenantId, onAssignPlan, onAddAddon }) => {
   )
   // ALWAYS recalculate — database mein stale totalAmount ho sakta hai
   const totalPrice = basePlanPrice + addonTotalPrice
-
-  const usedStudents  = data?.usedStudents || 0
-  const totalCapacity = data?.totalStudentLimit || 0
-  const baseCapacity  = plan?.studentLimit || 0
-  const addonCapacity = addons.reduce((s, a) => s + (a.studentLimit || 0) * (a.quantity || 1), 0)
 
   /* ── loading skeleton ── */
   if (loading && !data) {
@@ -297,21 +264,6 @@ const SubscriptionStatusPanel = ({ tenantId, onAssignPlan, onAddAddon }) => {
         </div>
       )}
 
-      {/* ── Student Capacity Usage ───────────────────────────── */}
-      <div className="px-3 py-3 rounded-xl bg-blue-50 border border-blue-100">
-        <div className="flex items-center gap-2 mb-2.5">
-          <Users size={13} className="text-blue-600" />
-          <span className="text-xs font-semibold text-blue-800">Student Capacity</span>
-          {hasAddon && (
-            <Tooltip title={`Base: ${fmt(baseCapacity)} + Addons: ${fmt(addonCapacity)}`}>
-              <span className="text-[10px] bg-purple-100 text-purple-700 border border-purple-200 px-1.5 py-0.5 rounded-full font-bold cursor-help">
-                +{fmt(addonCapacity)} addon
-              </span>
-            </Tooltip>
-          )}
-        </div>
-        <UsageBar used={usedStudents} total={totalCapacity} />
-      </div>
 
       {/* ── Add-ons Section ──────────────────────────────────── */}
       <div>

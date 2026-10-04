@@ -242,10 +242,6 @@ const PlanCard = ({ plan, selected, onSelect }) => {
                 /{plan.billingCycle === 'Yearly' ? 'yr' : 'mo'}
               </span>
             </div>
-            <div style={{ display:'flex', alignItems:'center', gap:4, fontSize:11, color: C.textSoft }}>
-              <Users size={10} />
-              {plan.studentLimit > 0 ? plan.studentLimit.toLocaleString('en-IN') + ' students' : 'Unlimited'}
-            </div>
           </div>
           {plan.features?.length > 0 && (
             <div style={{ display:'flex', flexWrap:'wrap', gap:4, marginTop:8 }}>
@@ -558,7 +554,6 @@ const SubscriptionModal = ({ open, onClose, refresh, preSelectedSchoolId = null 
     if (!selSchool) e.school = 'Select a franchise'
     if (!selPlan)   e.plan   = 'Select a plan'
     if (activeTab === 'Plan') {
-      if (!count || Number(count) < 1) e.studentCount = 'Enter student count'
       if (!billMonth) e.billingMonth = 'Select billing month'
     }
     return e
@@ -575,7 +570,7 @@ const SubscriptionModal = ({ open, onClose, refresh, preSelectedSchoolId = null 
         toast.success('Add-on assigned successfully')
       } else {
         await postRequest({ url: 'subscription/admin-assign',
-          cred: { tenantId: selSchool, planId: selPlan, studentCount: Number(count),
+          cred: { tenantId: selSchool, planId: selPlan,
             paidStatus, billingMonth: billMonth,
             ...(dueDate ? { dueDate } : {}), ...(payRef ? { paymentRef: payRef } : {}) } })
         toast.success('Subscription assigned successfully')

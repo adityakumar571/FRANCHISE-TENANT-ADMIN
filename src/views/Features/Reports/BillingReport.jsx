@@ -93,7 +93,7 @@ const GenerateBillsModal = ({ open, onClose, onSuccess }) => {
       // Fetch pricing config
       const cfgRes = await getRequest('pricing-config')
       const cfg = cfgRes?.data?.data?.current || {
-        baseStudentLimit: 350, basePrice: 1200,
+        basePrice: 1200,
         extraBlockSize: 50, extraBlockPrice: 100,
       }
       setPricingConfig(cfg)

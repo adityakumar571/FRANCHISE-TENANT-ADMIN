@@ -136,15 +136,6 @@ const FreeTrialPackages = () => {
       ),
     },
     {
-      title: 'Student Limit',
-      dataIndex: 'studentLimit',
-      align: 'center',
-      width: 120,
-      render: (val) => (
-        <span className="text-sm font-medium text-gray-700">{(val || 0).toLocaleString('en-IN')}</span>
-      ),
-    },
-    {
       title: 'Features',
       dataIndex: 'features',
       render: (features) =>

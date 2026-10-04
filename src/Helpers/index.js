@@ -18,11 +18,9 @@ export const token = Cookies.get('multitenant')
 ─────────────────────────────────────────────────────────────────────────────*/
 const SILENT_401_PATTERNS = [
   /subscription/,
-  /session-billing/,
   /monthly-billing/,
   /installment/,
   /schools\//,
-  /pricing-config/,
 ]
 
 const isSilent401 = (url = '') =>

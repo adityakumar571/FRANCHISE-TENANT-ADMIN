@@ -198,17 +198,6 @@ const SubscriptionListing = () => {
       ),
     },
     {
-      title: 'Student Limit',
-      dataIndex: 'studentLimit',
-      align: 'center',
-      render: (val) =>
-        val != null ? (
-          <span className="text-sm text-gray-700 font-medium">{val.toLocaleString('en-IN')}</span>
-        ) : (
-          <span className="text-gray-400 text-xs">—</span>
-        ),
-    },
-    {
       title: 'Trial Days',
       dataIndex: 'trialDays',
       align: 'center',
@@ -281,17 +270,6 @@ const SubscriptionListing = () => {
           ₹{Number(price).toLocaleString('en-IN')}
         </span>
       ),
-    },
-    {
-      title: 'Students Added',
-      dataIndex: 'studentLimit',
-      align: 'center',
-      render: (val) =>
-        val != null ? (
-          <Tag color="purple">+{val.toLocaleString('en-IN')}</Tag>
-        ) : (
-          <span className="text-gray-400 text-xs">—</span>
-        ),
     },
     {
       title: 'Features',

@@ -312,22 +312,6 @@ const SubscriptionHistory = () => {
       ),
     },
     {
-      title: 'Student Limit',
-      dataIndex: 'totalStudentLimit',
-      align: 'center',
-      render: (v) => (
-        <span className="text-gray-700 font-medium">
-          {v != null ? v.toLocaleString('en-IN') : '—'}
-        </span>
-      ),
-    },
-    {
-      title: 'Used',
-      dataIndex: 'usedStudents',
-      align: 'center',
-      render: (v) => <span className="text-gray-500 text-sm">{v ?? 0}</span>,
-    },
-    {
       title: 'Billing Month',
       dataIndex: 'billingMonth',
       align: 'center',

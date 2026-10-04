@@ -6,13 +6,7 @@ import { deleteRequest, fileUpload, getRequest, postRequest, putRequest } from '
 import { calculatePrice, resolveAmount } from '../PricingConfig/PricingConfig'
 import dayjs from 'dayjs'
 
-/* ─── Subscription Tab Defaults ─── */
-const DEFAULT_PRICING = {
-  baseStudentLimit: 350,
-  basePrice: 1200,
-  extraBlockSize: 50,
-  extraBlockPrice: 100,
-}
+/* ─── Subscription Tab - No longer uses student-based pricing ─── */
 
 /* ─── Current Subscription Status Banner ─── */
 const CurrentSubStatus = ({ tenantId, onRefresh }) => {
@@ -88,7 +82,6 @@ const CurrentSubStatus = ({ tenantId, onRefresh }) => {
       <div className="flex items-center gap-3 text-[11px] text-gray-500 mb-1.5">
         <span>{plan.billingCycle}</span>
         {plan.startDate && <span>{dayjs(plan.startDate).format('DD MMM YY')} → {dayjs(plan.endDate).format('DD MMM YY')}</span>}
-        <span>Limit: <strong>{(data.totalStudentLimit || 0).toLocaleString('en-IN')}</strong></span>
       </div>
 
       {/* Payment + amount */}
@@ -97,9 +90,6 @@ const CurrentSubStatus = ({ tenantId, onRefresh }) => {
           {data.paidStatus}
         </Tag>
         <span className="text-gray-500">Total: <strong className="text-[#0c3b73]">₹{(data.totalAmount || 0).toLocaleString('en-IN')}</strong></span>
-        {data.usedStudents > 0 && (
-          <span className="text-gray-400">Used: {data.usedStudents.toLocaleString()}</span>
-        )}
       </div>
 
       {/* Addons summary */}
@@ -109,7 +99,7 @@ const CurrentSubStatus = ({ tenantId, onRefresh }) => {
           <div className="flex flex-wrap gap-1">
             {addons.map((a, i) => (
               <span key={i} className="text-[10px] bg-purple-100 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full font-semibold">
-                {a.name}{a.quantity > 1 ? ` ×${a.quantity}` : ''} · +{((a.studentLimit || 0) * (a.quantity || 1)).toLocaleString()} students
+                {a.name}{a.quantity > 1 ? ` ×${a.quantity}` : ''}
               </span>
             ))}
           </div>
@@ -186,7 +176,7 @@ const AddonManager = ({ tenantId, addons, onAddonChange }) => {
                   )}
                 </div>
                 <p className="text-[11px] text-purple-600 mt-0.5 pl-5">
-                  +{((a.studentLimit || 0) * (a.quantity || 1)).toLocaleString()} students · ₹{((a.price || 0) * (a.quantity || 1)).toLocaleString('en-IN')}
+                  ₹{((a.price || 0) * (a.quantity || 1)).toLocaleString('en-IN')}
                 </p>
               </div>
               <Tooltip title="Remove addon">
@@ -224,7 +214,7 @@ const AddonManager = ({ tenantId, addons, onAddonChange }) => {
               <option value="">Select add-on…</option>
               {addonOptions.map((a) => (
                 <option key={a._id} value={a._id}>
-                  {a.name} — +{a.studentLimit} students · ₹{a.price?.toLocaleString('en-IN')}
+                  {a.name} — ₹{a.price?.toLocaleString('en-IN')}
                 </option>
               ))}
             </select>
@@ -247,57 +237,6 @@ const AddonManager = ({ tenantId, addons, onAddonChange }) => {
           </div>
         </div>
       )}
-    </div>
-  )
-}
-
-/* ─── Price Breakdown for Subscription Tab ─── */
-const PriceBreakdown = ({ studentCount, pricingConfig, selectedPlan }) => {
-  if (!studentCount || studentCount < 1) return null
-
-  // Fixed price plan → show plan price directly
-  if (selectedPlan && selectedPlan.price > 0 && selectedPlan.pricingModel !== 'PER_STUDENT') {
-    return (
-      <div className="mt-3 bg-green-50 border border-green-100 rounded-lg p-3">
-        <div className="flex items-center gap-1.5 mb-2">
-          <IndianRupee size={13} className="text-green-700" />
-          <span className="text-xs font-semibold text-green-700">Plan Fixed Price</span>
-        </div>
-        <div className="flex justify-between text-xs">
-          <span className="text-gray-500">Plan: {selectedPlan.name} ({selectedPlan.billingCycle})</span>
-          <span className="font-bold text-green-700 text-sm">₹{selectedPlan.price?.toLocaleString('en-IN')}</span>
-        </div>
-      </div>
-    )
-  }
-
-  // PER_STUDENT → formula breakdown
-  const config = pricingConfig || DEFAULT_PRICING
-  const total = calculatePrice(studentCount, config)
-  const extra = Math.max(0, studentCount - config.baseStudentLimit)
-  const blocks = extra > 0 ? Math.ceil(extra / config.extraBlockSize) : 0
-  return (
-    <div className="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-3">
-      <div className="flex items-center gap-1.5 mb-2">
-        <Calculator size={13} className="text-[#0c3b73]" />
-        <span className="text-xs font-semibold text-[#0c3b73]">Auto-calculated Price (Per-Student)</span>
-      </div>
-      <div className="space-y-1 text-xs">
-        <div className="flex justify-between">
-          <span className="text-gray-500">Base (0–{config.baseStudentLimit} students)</span>
-          <span className="font-medium text-gray-800">₹{config.basePrice?.toLocaleString('en-IN')}</span>
-        </div>
-        {blocks > 0 && (
-          <div className="flex justify-between text-orange-600">
-            <span>Extra {extra} students ({blocks} block{blocks > 1 ? 's' : ''} × ₹{config.extraBlockPrice})</span>
-            <span className="font-medium">₹{(blocks * config.extraBlockPrice)?.toLocaleString('en-IN')}</span>
-          </div>
-        )}
-        <div className="border-t border-blue-200 pt-1 flex justify-between">
-          <span className="font-bold text-[#0c3b73]">Total Amount</span>
-          <span className="font-bold text-[#0c3b73] text-sm">₹{total?.toLocaleString('en-IN')}</span>
-        </div>
-      </div>
     </div>
   )
 }
@@ -325,7 +264,6 @@ const PlanCard = ({ plan, selected, onSelect }) => (
         </div>
         <div className="flex items-center gap-3 mt-1.5 flex-wrap">
           <span className="text-sm font-bold text-[#0c3b73]">₹{plan.price?.toLocaleString('en-IN')}</span>
-          <span className="text-[11px] text-gray-500">{plan.studentLimit?.toLocaleString('en-IN')} student limit</span>
         </div>
       </div>
       <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors ${

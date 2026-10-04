@@ -544,7 +544,7 @@ const BillDetailModal = ({ open, bill, onClose }) => {
 
           {/* Base */}
           <Row
-            label={`Base charge (≤${cfg.baseStudentLimit ?? 350} students)`}
+            label="Base charge"
             value={`₹${(bill.baseAmount || 0).toLocaleString('en-IN')}`}
           />
 
@@ -573,7 +573,6 @@ const BillDetailModal = ({ open, bill, onClose }) => {
                       <span className="text-xs text-gray-700 font-medium">{a.name}</span>
                       <span className="text-[10px] text-gray-400 ml-1.5">
                         {a.quantity > 1 ? `×${a.quantity} ` : ''}
-                        (+{((a.studentLimit ?? 0)).toLocaleString('en-IN')} students)
                         {a.billingCycle === 'Yearly' ? ' · yearly÷12' : ''}
                       </span>
                     </div>
@@ -634,8 +633,8 @@ const BillDetailModal = ({ open, bill, onClose }) => {
 
         {/* Config snapshot note */}
         <p className="text-[10px] text-gray-400 italic border-t border-gray-100 pt-2">
-          Pricing config at time of bill: base ≤{cfg.baseStudentLimit} → ₹{cfg.basePrice},
-          extra per {cfg.addonSlotSize} students → ₹{cfg.addonSlotPrice}
+          Pricing config at time of bill: base → ₹{cfg.basePrice},
+          addon slots → ₹{cfg.addonSlotPrice}
         </p>
       </div>
     </Modal>

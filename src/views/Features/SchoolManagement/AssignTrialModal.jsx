@@ -43,10 +43,6 @@ const PackageCard = ({ pkg, selected, onSelect }) => (
             <Clock size={11} className="text-[#0c3b73]" />
             {pkg.durationDays} days
           </span>
-          <span className="flex items-center gap-1 text-[11px] text-gray-600 font-medium">
-            <Users size={11} className="text-[#0c3b73]" />
-            {(pkg.studentLimit || 0).toLocaleString('en-IN')} students
-          </span>
           <span className="flex items-center gap-1 text-[11px] font-medium">
             {pkg.eligibleOnce ? (
               <><CheckCircle size={11} className="text-orange-500" /><span className="text-orange-600">One-time only</span></>
@@ -261,7 +257,6 @@ const AssignTrialModal = ({ open, school, onClose, onSuccess }) => {
                   ['School',        school.schoolName],
                   ['Package',       chosen.name],
                   ['Duration',      `${chosen.durationDays} days`],
-                  ['Student Limit', (chosen.studentLimit || 0).toLocaleString('en-IN')],
                   ['One-Time',      chosen.eligibleOnce ? 'Yes (once only)' : 'No'],
                   ['Force Override', force ? 'Yes' : 'No'],
                 ].map(([k, v]) => (

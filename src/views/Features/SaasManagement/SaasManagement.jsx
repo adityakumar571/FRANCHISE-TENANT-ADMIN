@@ -63,7 +63,6 @@ export default function SaasManagement() {
   // ── data states ──
   const [dashboard, setDashboard]         = useState(null)
   const [subscriptions, setSubscriptions] = useState([])
-  const [sessionReport, setSessionReport] = useState(null)
   const [loading, setLoading]             = useState(false)
 
   const fetchAll = useCallback(() => {
@@ -72,8 +71,7 @@ export default function SaasManagement() {
     Promise.allSettled([
       getRequest('saas/dashboard'),
       getRequest('subscription?limit=200'),
-      getRequest('session-billing/report'),
-    ]).then(([dashRes, subRes, sessionRes]) => {
+    ]).then(([dashRes, subRes]) => {
       if (dashRes.status === 'fulfilled') {
         setDashboard(dashRes.value?.data?.data || null)
       } else {
@@ -83,10 +81,6 @@ export default function SaasManagement() {
       if (subRes.status === 'fulfilled') {
         const raw = subRes.value?.data?.data
         setSubscriptions(Array.isArray(raw?.data) ? raw.data : Array.isArray(raw) ? raw : [])
-      }
-
-      if (sessionRes.status === 'fulfilled') {
-        setSessionReport(sessionRes.value?.data?.data || null)
       }
     }).finally(() => setLoading(false))
   }, [])
@@ -114,14 +108,6 @@ export default function SaasManagement() {
     color: PIE_COLORS[i % PIE_COLORS.length],
   }))
   const totalPlanSubs = planDist.reduce((a, b) => a + b.count, 0)
-
-  // ── revenue bar chart from session report ──
-  const revenueChart = sessionReport?.monthlyBreakdown
-    ? sessionReport.monthlyBreakdown.slice(-6).map(m => ({
-        m: new Date(m.month + '-01').toLocaleString('en-IN', { month: 'short' }),
-        v: m.collected || 0,
-      }))
-    : []
 
   // ── upcoming renewals from expiring list ──
   const renewals = (dashboard?.alerts?.expiringSoon || []).slice(0, 8)

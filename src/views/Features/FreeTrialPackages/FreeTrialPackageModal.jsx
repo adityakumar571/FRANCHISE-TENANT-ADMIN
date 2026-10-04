@@ -38,7 +38,6 @@ const EMPTY_FORM = {
   name:         '',
   description:  '',
   durationDays: '',
-  studentLimit: '350',
   features:     [''],
   isDefault:    false,
   eligibleOnce: true,
@@ -58,7 +57,6 @@ const FreeTrialPackageModal = ({ open, onClose, editData, refresh }) => {
         name:         editData.name         || '',
         description:  editData.description  || '',
         durationDays: editData.durationDays !== undefined ? String(editData.durationDays) : '',
-        studentLimit: editData.studentLimit !== undefined ? String(editData.studentLimit) : '350',
         features:     editData.features?.length ? editData.features : [''],
         isDefault:    editData.isDefault    || false,
         eligibleOnce: editData.eligibleOnce !== false,
@@ -88,8 +86,6 @@ const FreeTrialPackageModal = ({ open, onClose, editData, refresh }) => {
       e.name = 'Package name is required'
     if (!form.durationDays || Number(form.durationDays) < 1)
       e.durationDays = 'Trial duration must be at least 1 day'
-    if (!form.studentLimit || Number(form.studentLimit) < 1)
-      e.studentLimit = 'Student limit must be at least 1'
     return e
   }
 
@@ -106,7 +102,6 @@ const FreeTrialPackageModal = ({ open, onClose, editData, refresh }) => {
         name:         form.name.trim(),
         description:  form.description.trim(),
         durationDays: Number(form.durationDays),
-        studentLimit: Number(form.studentLimit),
         features:     form.features.filter((f) => f.trim()),
         isDefault:    form.isDefault,
         eligibleOnce: form.eligibleOnce,
@@ -183,7 +178,7 @@ const FreeTrialPackageModal = ({ open, onClose, editData, refresh }) => {
           />
         </Field>
 
-        {/* ── Duration + Student Limit ── */}
+        {/* ── Duration ── */}
         <div className="grid grid-cols-2 gap-4">
           <Field label={<RequiredLabel label="Duration (Days)" />} error={errors.durationDays}>
             <input
@@ -195,24 +190,12 @@ const FreeTrialPackageModal = ({ open, onClose, editData, refresh }) => {
               className={inputCls(errors.durationDays)}
             />
           </Field>
-
-          <Field label={<RequiredLabel label="Student Limit" />} error={errors.studentLimit}>
-            <input
-              type="number"
-              value={form.studentLimit}
-              onChange={(e) => set('studentLimit', e.target.value)}
-              placeholder="e.g. 350"
-              min={1}
-              className={inputCls(errors.studentLimit)}
-            />
-          </Field>
         </div>
 
         {/* Preview */}
-        {form.durationDays && form.studentLimit && Number(form.durationDays) > 0 && Number(form.studentLimit) > 0 && (
+        {form.durationDays && Number(form.durationDays) > 0 && (
           <InfoBox color="green">
-            🎁 New schools will get a <strong>{form.durationDays}-day</strong> free trial with up to{' '}
-            <strong>{Number(form.studentLimit).toLocaleString('en-IN')} students</strong>.
+            🎁 New franchises will get a <strong>{form.durationDays}-day</strong> free trial.
           </InfoBox>
         )}
 
