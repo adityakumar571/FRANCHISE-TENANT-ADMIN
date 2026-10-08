@@ -58,6 +58,7 @@ export default function SupplierManagement() {
   const [addForm] = Form.useForm()
   const [loginModalVisible, setLoginModalVisible] = useState(false)
   const [selectedSupplierForLogin, setSelectedSupplierForLogin] = useState(null)
+  const [credentialsModal, setCredentialsModal] = useState({ visible: false, email: '', password: '' })
   const PER = 10
   const debounceRef = useRef()
 
@@ -67,27 +68,74 @@ export default function SupplierManagement() {
       const params = new URLSearchParams({
         page: page.toString(),
         limit: PER.toString(),
-        search: search,
-        status: statusFilter
       })
       
-      const res = await getRequest(`/franchise/suppliers?${params}`)
-      const d = res.data?.data
+      if (search) params.append('search', search)
+      if (statusFilter) params.append('status', statusFilter)
       
-      setSuppliers(d?.suppliers || [])
-      setTotal(d?.total || 0)
-      setTotalPages(d?.totalPages || 1)
-      if (d?.kpi) setKpi(d.kpi)
+      console.log('🔍 Fetching suppliers with params:', params.toString())
+      
+      // Use global suppliers endpoint (read-only for franchises)
+      const res = await getRequest(`franchise-suppliers/suppliers?${params}`)
+      console.log('📡 Supplier response:', res)
+      
+      // Handle different response structures
+      const responseData = res?.data?.data || res?.data || res
+      let suppliersList = Array.isArray(responseData) ? responseData : 
+                          responseData?.suppliers || []
+      
+      // Normalize data to match frontend expectations
+      suppliersList = suppliersList.map((supplier, index) => ({
+        ...supplier,
+        id: supplier._id?.slice(-8) || `SUP${index + 1}`, // Generate supplier code
+        name: supplier.companyName || 'N/A',
+        city: supplier.address?.city || 'N/A',
+        state: supplier.address?.state || 'N/A',
+        outstanding: supplier.outstanding || 0,
+        status: supplier.status || 'Active'
+      }))
+      
+      console.log('✅ Suppliers normalized:', suppliersList)
+      setSuppliers(suppliersList)
+      setTotal(responseData?.total || suppliersList.length)
+      setTotalPages(responseData?.totalPages || Math.ceil(suppliersList.length / PER))
+      
+      // Calculate KPIs from loaded data
+      const activeCount = suppliersList.filter(s => s.status === 'Active').length
+      const inactiveCount = suppliersList.filter(s => s.status === 'Inactive' || s.status === 'Suspended').length
+      const totalOutstanding = suppliersList.reduce((sum, s) => sum + (s.outstanding || 0), 0)
+      
+      setKpi({
+        total: suppliersList.length,
+        active: activeCount,
+        inactive: inactiveCount,
+        totalPayable: totalOutstanding
+      })
     } catch (error) {
-      message.error('Failed to load suppliers')
+      console.error('❌ Supplier fetch error:', error)
+      console.error('Error response:', error?.response?.data)
+      message.error(error?.response?.data?.message || 'Failed to load suppliers')
     } finally {
       setLoading(false)
     }
   }, [search, statusFilter, page])
 
   useEffect(() => { 
+    // Test auth first
+    testAuth()
     fetchSuppliers() 
   }, [fetchSuppliers])
+
+  const testAuth = async () => {
+    try {
+      console.log('🧪 Testing auth...')
+      const res = await getRequest('franchise-suppliers/test-auth')
+      console.log('✅ Auth test response:', res)
+    } catch (error) {
+      console.error('❌ Auth test failed:', error)
+      console.error('Error details:', error?.response?.data)
+    }
+  }
 
   const handleSearchChange = (val) => {
     setSearch(val)
@@ -97,6 +145,10 @@ export default function SupplierManagement() {
   }
 
   const handleStatusChange = async (supplierId, newStatus) => {
+    message.info('Supplier status can only be changed by Super Admin.')
+    return
+    
+    /* OLD CODE - franchises cannot modify suppliers
     try {
       const status = newStatus === 'Active'
       await putRequest({
@@ -109,32 +161,93 @@ export default function SupplierManagement() {
     } catch (error) {
       message.error('Failed to update supplier status')
     }
+    */
   }
 
   const handleAddSupplier = async (values) => {
     try {
-      await postRequest({
-        url: '/franchise/suppliers',
-        cred: values
+      console.log('📤 Form values received:', values)
+      
+      // Transform data to match backend expectations
+      const payload = {
+        companyName: values.companyName,
+        contactPerson: values.contactPerson,
+        email: values.email,
+        password: values.password,
+        phone: values.phone,
+        businessType: values.businessType,
+        address: {
+          street: values.address?.street || '',
+          city: values.address?.city || '',
+          state: values.address?.state || '',
+          pincode: values.address?.pincode || ''
+        }
+      }
+      
+      console.log('📤 Sending payload to backend:', JSON.stringify(payload, null, 2))
+      
+      // Call Super Admin API to create supplier
+      const response = await postRequest({
+        url: 'suppliers/admin/create',
+        cred: payload
       })
       
-      message.success('Supplier created successfully')
+      console.log('✅ Supplier created successfully:', response)
+      
+      // Close add modal
       setAddModalVisible(false)
       addForm.resetFields()
+      
+      // Show success message
+      message.success('Supplier created! Copy credentials from alert.', 4)
+      
+      // Show browser alert with credentials (GUARANTEED TO WORK!)
+      alert(`✅ SUPPLIER CREATED SUCCESSFULLY!
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 LOGIN CREDENTIALS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏢 Company: ${values.companyName}
+
+📧 Email: ${values.email}
+
+🔐 Password: ${values.password}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ IMPORTANT:
+• Copy and save these credentials NOW
+• Email and password are needed for supplier login
+• These won't be shown again
+
+💡 TIP: Screenshot this alert!`)
+      
+      // Refresh supplier list
       fetchSuppliers()
     } catch (error) {
-      message.error('Failed to create supplier')
+      console.error('❌ Create supplier error:', error)
+      console.error('Error response:', error?.response?.data)
+      
+      // Show detailed error message
+      const errorMsg = error?.response?.data?.data 
+        ? JSON.stringify(error.response.data.data) 
+        : error?.response?.data?.message || 'Failed to create supplier'
+      
+      message.error(errorMsg)
     }
   }
 
   const handleViewDetails = async (supplierId) => {
     try {
-      const response = await getRequest(`/franchise/suppliers/${supplierId}`)
-      if (response.data.success) {
-        setSelectedSupplier(response.data.data)
+      // Use global suppliers endpoint for viewing details
+      const response = await getRequest(`franchise-suppliers/suppliers/${supplierId}`)
+      if (response.data.success !== false) {
+        setSelectedSupplier(response.data.data || response.data)
         setDrawerVisible(true)
       }
     } catch (error) {
+      console.error('View details error:', error)
       message.error('Failed to fetch supplier details')
     }
   }
@@ -418,11 +531,11 @@ export default function SupplierManagement() {
         >
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <Form.Item
-              name="name"
-              label="Supplier Name"
-              rules={[{ required: true, message: 'Please input supplier name!' }]}
+              name="companyName"
+              label="Company Name"
+              rules={[{ required: true, message: 'Please input company name!' }]}
             >
-              <Input placeholder="Enter supplier name" />
+              <Input placeholder="Enter company name" />
             </Form.Item>
 
             <Form.Item
@@ -445,23 +558,51 @@ export default function SupplierManagement() {
             </Form.Item>
 
             <Form.Item
+              name="password"
+              label="Password"
+              rules={[
+                { required: true, message: 'Please input password!' },
+                { min: 6, message: 'Password must be at least 6 characters!' }
+              ]}
+            >
+              <Input.Password placeholder="Enter password (min 6 chars)" />
+            </Form.Item>
+
+            <Form.Item
               name="phone"
               label="Phone"
-              rules={[{ required: true, message: 'Please input phone!' }]}
+              rules={[
+                { required: true, message: 'Please input phone!' },
+                { pattern: /^[0-9]{10}$/, message: 'Please enter valid 10-digit phone number!' }
+              ]}
             >
-              <Input placeholder="Enter phone number" />
+              <Input placeholder="Enter 10-digit phone number" maxLength={10} />
+            </Form.Item>
+
+            <Form.Item
+              name="businessType"
+              label="Business Type"
+              rules={[{ required: true, message: 'Please select business type!' }]}
+            >
+              <Select placeholder="Select business type">
+                <Select.Option value="Manufacturer">Manufacturer</Select.Option>
+                <Select.Option value="Distributor">Distributor</Select.Option>
+                <Select.Option value="Retailer">Retailer</Select.Option>
+                <Select.Option value="Wholesaler">Wholesaler</Select.Option>
+                <Select.Option value="Service Provider">Service Provider</Select.Option>
+              </Select>
             </Form.Item>
 
             <Form.Item
               name="gstNo"
-              label="GST Number"
+              label="GST Number (Optional)"
             >
               <Input placeholder="Enter GST number" />
             </Form.Item>
 
             <Form.Item
               name="dlNo"
-              label="DL Number"
+              label="DL Number (Optional)"
             >
               <Input placeholder="Enter DL number" />
             </Form.Item>
@@ -472,15 +613,15 @@ export default function SupplierManagement() {
             <h3 style={{ fontSize: 16, fontWeight: 600, marginBottom: 12 }}>Address Information</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <Form.Item
-                name="address"
-                label="Address"
-                rules={[{ required: true, message: 'Please input address!' }]}
+                name={['address', 'street']}
+                label="Street Address"
+                rules={[{ required: true, message: 'Please input street address!' }]}
               >
-                <Input.TextArea rows={2} placeholder="Enter full address" />
+                <Input.TextArea rows={2} placeholder="Building, Street, Area" />
               </Form.Item>
 
               <Form.Item
-                name="city"
+                name={['address', 'city']}
                 label="City"
                 rules={[{ required: true, message: 'Please input city!' }]}
               >
@@ -488,7 +629,7 @@ export default function SupplierManagement() {
               </Form.Item>
 
               <Form.Item
-                name="state"
+                name={['address', 'state']}
                 label="State"
                 rules={[{ required: true, message: 'Please input state!' }]}
               >
@@ -496,11 +637,14 @@ export default function SupplierManagement() {
               </Form.Item>
 
               <Form.Item
-                name="pincode"
+                name={['address', 'pincode']}
                 label="Pincode"
-                rules={[{ required: true, message: 'Please input pincode!' }]}
+                rules={[
+                  { required: true, message: 'Please input pincode!' },
+                  { pattern: /^[0-9]{6}$/, message: 'Please enter valid 6-digit pincode!' }
+                ]}
               >
-                <Input placeholder="Enter pincode" />
+                <Input placeholder="Enter 6-digit pincode" maxLength={6} />
               </Form.Item>
             </div>
           </div>
@@ -530,6 +674,104 @@ export default function SupplierManagement() {
         }}
         supplier={selectedSupplierForLogin}
       />
+
+      {/* Supplier Credentials Modal */}
+      <Modal
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CheckCircleOutlined style={{ fontSize: 20, color: '#16a34a' }} />
+            </div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Supplier Created Successfully!</h3>
+              <p style={{ margin: 0, fontSize: 12, color: '#6b7280' }}>Save these credentials for supplier login</p>
+            </div>
+          </div>
+        }
+        open={credentialsModal.visible}
+        onCancel={() => setCredentialsModal({ visible: false, email: '', password: '', companyName: '' })}
+        footer={[
+          <Button 
+            key="copy" 
+            onClick={() => {
+              const text = `Supplier: ${credentialsModal.companyName}\nEmail: ${credentialsModal.email}\nPassword: ${credentialsModal.password}`
+              navigator.clipboard.writeText(text)
+              message.success('Credentials copied to clipboard!')
+            }}
+          >
+            Copy Credentials
+          </Button>,
+          <Button 
+            key="close" 
+            type="primary"
+            onClick={() => setCredentialsModal({ visible: false, email: '', password: '', companyName: '' })}
+          >
+            Done
+          </Button>
+        ]}
+        width={500}
+      >
+        <div style={{ padding: '20px 0' }}>
+          <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 8, padding: 16, marginBottom: 20 }}>
+            <p style={{ margin: 0, fontSize: 13, color: '#92400e', fontWeight: 600 }}>
+              ⚠️ Important: Save these credentials now! They won't be shown again.
+            </p>
+          </div>
+
+          <div style={{ background: '#f9fafb', borderRadius: 8, padding: 20 }}>
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ margin: '0 0 4px', fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Company Name</p>
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: '#111827' }}>{credentialsModal.companyName}</p>
+            </div>
+
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ margin: '0 0 4px', fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Login Email</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '8px 12px', borderRadius: 6, border: '1px solid #e5e7eb' }}>
+                <span style={{ fontFamily: 'monospace', fontSize: 14, color: '#0c3b73', flex: 1 }}>{credentialsModal.email}</span>
+                <Button 
+                  size="small" 
+                  onClick={() => {
+                    navigator.clipboard.writeText(credentialsModal.email)
+                    message.success('Email copied!')
+                  }}
+                >
+                  Copy
+                </Button>
+              </div>
+            </div>
+
+            <div>
+              <p style={{ margin: '0 0 4px', fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Password</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '8px 12px', borderRadius: 6, border: '1px solid #e5e7eb' }}>
+                <span style={{ fontFamily: 'monospace', fontSize: 14, color: '#dc2626', flex: 1 }}>{credentialsModal.password}</span>
+                <Button 
+                  size="small"
+                  onClick={() => {
+                    navigator.clipboard.writeText(credentialsModal.password)
+                    message.success('Password copied!')
+                  }}
+                >
+                  Copy
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 16, padding: 12, background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 6 }}>
+            <p style={{ margin: '0 0 8px', fontSize: 13, color: '#1e40af', fontWeight: 600 }}>
+              💡 How to Login as Supplier:
+            </p>
+            <ol style={{ margin: 0, paddingLeft: 20, fontSize: 12, color: '#1e40af' }}>
+              <li>Go to Supplier Portal</li>
+              <li>Use the email and password shown above</li>
+              <li>Click "Login" button to access supplier dashboard</li>
+            </ol>
+            <p style={{ margin: '8px 0 0', fontSize: 11, color: '#6b7280', fontStyle: 'italic' }}>
+              Note: Quick Login feature is under development. Use manual login for now.
+            </p>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
