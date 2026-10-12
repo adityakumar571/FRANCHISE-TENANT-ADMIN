@@ -48,6 +48,7 @@ const ActivityLogs            = l(() => import('./views/Features/ActivityLogs/Ac
 
 // Suppliers
 const SupplierManagement      = l(() => import('./views/Features/Suppliers/SupplierManagement'))
+const LiveRatesComparison     = l(() => import('./views/Features/Suppliers/LiveRatesComparison'))
 
 // Other
 const FAQListing              = l(() => import('./views/Features/FAQ/FAQListing'))
@@ -98,6 +99,7 @@ const routes = [
 
   // Suppliers
   { path: '/suppliers',                          element: SupplierManagement,       roles: ['SuperAdmin', 'Admin'] },
+  { path: '/suppliers/live-rates',               element: LiveRatesComparison,      roles: ['SuperAdmin', 'Admin'] },
 
   // Other
   { path: '/faq',                                element: FAQListing,               roles: ['SuperAdmin', 'Admin'] },

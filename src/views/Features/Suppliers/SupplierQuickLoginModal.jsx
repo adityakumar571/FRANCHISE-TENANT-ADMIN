@@ -11,8 +11,8 @@ import { postRequest } from '../../../Helpers'
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 
 const getSupplierPortalUrl = () => {
-  // You can configure supplier portal URL in environment
-  return import.meta.env.VITE_SUPPLIER_PORTAL_URL || 'http://localhost:5180'
+  // Supplier portal is on ADMIN-FRONTEND (port 5179), not TENANT-ADMIN (5180)
+  return import.meta.env.VITE_SUPPLIER_PORTAL_URL || 'http://localhost:5179'
 }
 
 /* ════════════════════════════════════════════════
@@ -45,7 +45,7 @@ const SupplierQuickLoginModal = ({ open, onClose, supplier }) => {
   const handleLoginAs = async () => {
     try {
       const res = await postRequest({
-        url: `franchise/suppliers/${supplier._id}/login-as`,
+        url: `suppliers/admin/${supplier._id}/quick-login`,
         cred: {}
       })
       
@@ -63,10 +63,10 @@ const SupplierQuickLoginModal = ({ open, onClose, supplier }) => {
       setLoginToken(token)
       setSupplierCredentials({
         email: supplierData?.email || supplier.email,
-        supplierCode: supplierData?.supplierCode || supplier.supplierCode || supplier.id,
-        name: supplierData?.name || supplier.name,
+        supplierCode: supplierData?.supplierCode || supplier.supplierCode || supplier._id,
+        name: supplierData?.companyName || supplier.companyName || supplier.name,
         // Password is the same as supplierCode for auto-login
-        password: supplierData?.supplierCode || supplier.supplierCode || supplier.id
+        password: supplierData?.supplierCode || supplier.supplierCode || supplier._id
       })
       setStep('credentials')
     } catch (err) {
@@ -75,7 +75,7 @@ const SupplierQuickLoginModal = ({ open, onClose, supplier }) => {
       setErrorMsg(msg)
       setDebugInfo({
         type: 'login',
-        tried: [`POST ${API_BASE}franchise/suppliers/${supplier._id}/login-as`],
+        tried: [`POST ${API_BASE}suppliers/admin/${supplier._id}/quick-login`],
         error: msg,
         response: err?.response?.data
       })
@@ -96,7 +96,14 @@ const SupplierQuickLoginModal = ({ open, onClose, supplier }) => {
     setStep('opening')
     toast.success(`Opening ${supplier.name} portal…`)
     const portalUrl = getSupplierPortalUrl()
-    const targetUrl = `${portalUrl}/auto-login?token=${encodeURIComponent(token)}&supplierId=${encodeURIComponent(supplier._id)}`
+    const targetUrl = `${portalUrl}/supplier/auto-login?token=${encodeURIComponent(token)}&supplierId=${encodeURIComponent(supplier._id)}`
+    
+    console.log('🚀 Opening Supplier Portal:', {
+      portalUrl,
+      targetUrl,
+      token: token.substring(0, 50) + '...'
+    })
+    
     setTimeout(() => {
       window.open(targetUrl, '_blank', 'noopener,noreferrer')
       setStep('done')

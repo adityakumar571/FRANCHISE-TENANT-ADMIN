@@ -43,10 +43,13 @@ const useNav = () => {
       icon: <CreditCard className={`me-3 ${Y}`} style={SZ} />,
     },
     {
-      component: CNavItem,
+      component: CNavGroup,
       name: 'Suppliers',
-      to: '/suppliers',
       icon: <Truck className={`me-3 ${Y}`} style={SZ} />,
+      items: [
+        { component: CNavItem, name: 'Manage Suppliers', to: '/suppliers' },
+        { component: CNavItem, name: 'Live Rates', to: '/suppliers/live-rates' },
+      ],
     },
     {
       component: CNavItem,
