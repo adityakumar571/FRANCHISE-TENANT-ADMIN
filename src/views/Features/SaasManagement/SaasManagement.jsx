@@ -101,6 +101,26 @@ export default function SaasManagement() {
     { title: 'Active Franchises',    val: fmt(dashboard?.franchises?.active || 0), trend: `${fmt(dashboard?.franchises?.inactive || 0)} inactive`, up: true, color: '#0891b2', bg: '#e0f7fa', bd: '#b2ebf2' },
   ]
 
+  // ── revenue bar chart: last 6 months ──
+  const revenueChart = (() => {
+    const raw = dashboard?.billing?.monthly || dashboard?.revenue?.monthly || []
+    if (raw.length > 0) {
+      return raw.map(r => ({
+        m: r.month || r._id || '',
+        v: r.revenue || r.amount || r.total || 0,
+      }))
+    }
+    // fallback: build last 6 months with zero values so the chart always renders
+    return Array.from({ length: 6 }, (_, i) => {
+      const d = new Date()
+      d.setMonth(d.getMonth() - (5 - i))
+      return {
+        m: d.toLocaleString('en-IN', { month: 'short' }),
+        v: 0,
+      }
+    })
+  })()
+
   // ── pie chart: plan distribution ──
   const planDist = (dashboard?.planDistribution || []).map((p, i) => ({
     name:  p._id || 'Unknown',
