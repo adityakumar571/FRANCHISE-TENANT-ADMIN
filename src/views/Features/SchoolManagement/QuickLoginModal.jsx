@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Modal } from 'antd'
 import {
   LogIn, Loader2, ExternalLink,
@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import Cookies from 'js-cookie'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 
@@ -78,9 +79,22 @@ const QuickLoginModal = ({ open, onClose, school }) => {
 
   const handleLoginAs = async (role) => {
     try {
+      // Get the auth token from cookie (stored as 'multitenant')
+      const authToken = Cookies.get('multitenant')
+      
+      if (!authToken) {
+        throw new Error('No authentication token found. Please log in first.')
+      }
+
       const res = await axios.post(
         `${API_BASE}schools/${school._id}/login-as`,
-        { role }
+        { role },
+        {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
       )
       const token = res?.data?.data?.token
       if (!token) throw new Error('Login succeeded but no token returned')
@@ -124,7 +138,7 @@ const QuickLoginModal = ({ open, onClose, school }) => {
       onCancel={handleClose}
       footer={null}
       width={500}
-      destroyOnClose
+      destroyOnHidden
       styles={{
         content: { borderRadius: 20, padding: 0, overflow: 'hidden', fontFamily: 'Inter, sans-serif' },
         header: { padding: '20px 24px 0 24px', marginBottom: 0, background: 'transparent' },
@@ -140,10 +154,10 @@ const QuickLoginModal = ({ open, onClose, school }) => {
           </div>
           <div>
             <p style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', margin: 0, letterSpacing: '-0.02em' }}>
-              Quick Login to School
+              Quick Login to Franchise
             </p>
             <p style={{ fontSize: 12, fontWeight: 400, color: '#94a3b8', margin: 0, marginTop: 2 }}>
-              Choose a role to open the school portal
+              Choose a role to open the Franchise portal
             </p>
           </div>
         </div>
