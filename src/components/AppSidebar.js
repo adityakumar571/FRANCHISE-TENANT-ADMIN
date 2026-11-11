@@ -44,6 +44,13 @@ const NAV_ITEMS = [
         ],
       },
       { label: 'Subscription Plans',  to: '/subscription-plans',             icon: CreditCard },
+      {
+        label: 'Masters',             icon: BarChart2, children: [
+          { label: 'Medicine Master',  to: '/medicine-master' },
+          { label: 'Add Medicine',     to: '/medicine-master/add' },
+          { label: 'Bulk Upload',      to: '/medicine-master/bulk-upload' },
+        ],
+      },
       { label: 'Suppliers',          to: '/suppliers',                      icon: Truck },
       { label: 'Free Trial Packages', to: '/free-trial-packages',            icon: Gift },
       { label: 'Subscription History',to: '/subscription-history',           icon: Receipt },

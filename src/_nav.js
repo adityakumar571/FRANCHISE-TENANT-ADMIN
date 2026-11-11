@@ -44,6 +44,16 @@ const useNav = () => {
     },
     {
       component: CNavGroup,
+      name: 'Masters',
+      icon: <Database className={`me-3 ${Y}`} style={SZ} />,
+      items: [
+        { component: CNavItem, name: 'Medicine Master',    to: '/medicine-master' },
+        { component: CNavItem, name: 'Add Medicine',       to: '/medicine-master/add' },
+        { component: CNavItem, name: 'Bulk Upload',        to: '/medicine-master/bulk-upload' },
+      ],
+    },
+    {
+      component: CNavGroup,
       name: 'Suppliers',
       icon: <Truck className={`me-3 ${Y}`} style={SZ} />,
       items: [

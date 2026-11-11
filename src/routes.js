@@ -50,6 +50,12 @@ const ActivityLogs            = l(() => import('./views/Features/ActivityLogs/Ac
 const SupplierManagement      = l(() => import('./views/Features/Suppliers/SupplierManagement'))
 const LiveRatesComparison     = l(() => import('./views/Features/Suppliers/LiveRatesComparison'))
 
+// Medicine Master
+const MedicineMasterList      = l(() => import('./views/Features/MedicineMaster/MedicineMasterList'))
+const AddMedicineMaster       = l(() => import('./views/Features/MedicineMaster/AddMedicineWrapper'))
+const EditMedicineMaster      = l(() => import('./views/Features/MedicineMaster/EditMedicineWrapper'))
+const BulkUploadMedicines     = l(() => import('./views/Features/MedicineMaster/BulkUploadMedicines'))
+
 // Other
 const FAQListing              = l(() => import('./views/Features/FAQ/FAQListing'))
 const ContactInquiries        = l(() => import('./views/Features/ContactInquiries/ContactInquiries'))
@@ -100,6 +106,12 @@ const routes = [
   // Suppliers
   { path: '/suppliers',                          element: SupplierManagement,       roles: ['SuperAdmin', 'Admin'] },
   { path: '/suppliers/live-rates',               element: LiveRatesComparison,      roles: ['SuperAdmin', 'Admin'] },
+
+  // Medicine Master
+  { path: '/medicine-master',                    element: MedicineMasterList,       roles: ['SuperAdmin', 'Admin'] },
+  { path: '/medicine-master/add',                element: AddMedicineMaster,        roles: ['SuperAdmin', 'Admin'] },
+  { path: '/medicine-master/edit/:id',           element: EditMedicineMaster,       roles: ['SuperAdmin', 'Admin'] },
+  { path: '/medicine-master/bulk-upload',        element: BulkUploadMedicines,      roles: ['SuperAdmin', 'Admin'] },
 
   // Other
   { path: '/faq',                                element: FAQListing,               roles: ['SuperAdmin', 'Admin'] },
