@@ -1,14 +1,14 @@
 /* eslint-disable prettier/prettier */
+import './Login.css'
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import useCookie from '../../../Hooks/cookie'
-import { FaEye, FaEyeSlash } from 'react-icons/fa'
+import { FaEye, FaEyeSlash, FaBox, FaShieldAlt, FaRocket } from 'react-icons/fa'
 import { AppContext } from '../../../Context/AppContext'
 import { postRequest } from '../../../Helpers'
 
 import logo from '../../../assets/PharmaNexus.png'
-import loginImg from '../../../assets/logins.jpg'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -34,6 +34,11 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
+    if (!formData.userId || !formData.password) {
+      toast.error('Please fill in all fields')
+      return
+    }
+
     setLoading(true)
 
     postRequest({
@@ -45,10 +50,7 @@ const Login = () => {
 
         setCookie('multitenant', res?.data?.data?.token, 30)
 
-        localStorage.setItem(
-          'userId',
-          JSON.stringify(res?.data?.data?.user),
-        )
+        localStorage.setItem('userId', JSON.stringify(res?.data?.data?.user))
 
         setUser(res?.data?.data?.user)
 
@@ -59,206 +61,142 @@ const Login = () => {
       .catch((err) => {
         setLoading(false)
 
-        toast.error(
-          err?.response?.data?.message || 'Login failed',
-        )
+        toast.error(err?.response?.data?.message || 'Login failed')
       })
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexWrap: 'wrap',
-      }}
-    >
-      {/* LEFT SIDE */}
-      <div
-        style={{
-          flex: 1,
-          backgroundColor: '#00007B',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '20px',
-        }}
-      >
-        <img
-          src={loginImg}
-          alt="Login"
-          style={{
-            width: '75%',
-            maxWidth: '500px',
-          }}
-        />
+    <div className="lp-page">
+      {/* BACKGROUND */}
+      <div className="lp-bg">
+        <div className="lp-bg::before"></div>
+        <div className="lp-bg__grid"></div>
+        <div className="lp-bg__orb lp-bg__orb--1"></div>
+        <div className="lp-bg__orb lp-bg__orb--2"></div>
+        <div className="lp-bg__orb lp-bg__orb--3"></div>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div
-        style={{
-          flex: 1,
-          background: '#f5f6f8',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '40px',
-          position: 'relative',
-        }}
-      >
-        {/* TOP LOGO */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 30,
-            right: 40,
-          }}
-        >
-          <img
-            src={logo}
-            alt="logo"
-            style={{
-              height: '45px',
-            }}
-          />
+      {/* CONTAINER */}
+      <div className="lp-container">
+        {/* LEFT PANEL — Branding */}
+        <div className="lp-left">
+          <div className="lp-left__inner">
+            <img src={logo} alt="PharmaNexus" className="lp-logo" />
+
+            <div className="lp-badge">
+              <span className="lp-badge__dot"></span>
+              Pharmacy Management
+            </div>
+
+            <h1 className="lp-title">
+              Manage Your <span className="lp-title__gold">Pharmacy</span> with Ease
+            </h1>
+
+            <p className="lp-desc">
+              Control inventory, track sales, and optimize operations with our all-in-one platform
+              for modern pharmacies.
+            </p>
+
+            <ul className="lp-features">
+              <li className="lp-feature">
+                <div className="lp-feature__icon">
+                  <FaBox />
+                </div>
+                <div>
+                  <div className="lp-feature__title">Inventory Management</div>
+                  <div className="lp-feature__desc">
+                    Real-time stock tracking and automated alerts
+                  </div>
+                </div>
+              </li>
+
+              <li className="lp-feature">
+                <div className="lp-feature__icon">
+                  <FaShieldAlt />
+                </div>
+                <div>
+                  <div className="lp-feature__title">Secure & Compliant</div>
+                  <div className="lp-feature__desc">Enterprise-grade security for your data</div>
+                </div>
+              </li>
+
+              <li className="lp-feature">
+                <div className="lp-feature__icon">
+                  <FaRocket />
+                </div>
+                <div>
+                  <div className="lp-feature__title">Fast & Reliable</div>
+                  <div className="lp-feature__desc">
+                    Lightning-quick operations and 99.9% uptime
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* LOGIN CARD */}
-        <div
-          style={{
-            width: '100%',
-            maxWidth: '420px',
-            background: '#fff',
-            padding: '40px',
-            borderRadius: '10px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-          }}
-        >
-          <h2
-            style={{
-              fontWeight: 600,
-              color: '#006aa3',
-              marginBottom: '8px',
-            }}
-          >
-            Login
-          </h2>
-
-          <p
-            style={{
-              color: '#666',
-              marginBottom: '25px',
-            }}
-          >
-            Sign in to your account
-          </p>
-
-          <form onSubmit={handleSubmit}>
-            {/* USER ID */}
-            <div style={{ marginBottom: '20px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: 500,
-                }}
-              >
-                User ID
-              </label>
-
-              <input
-                type="text"
-                name="userId"
-                value={formData.userId}
-                onChange={handleChange}
-                placeholder="Enter User ID"
-                required
-                style={{
-                  width: '100%',
-                  height: '45px',
-                  border: '1px solid #dcdcdc',
-                  borderRadius: '6px',
-                  padding: '0 15px',
-                  outline: 'none',
-                }}
-              />
+        {/* RIGHT PANEL — Login Form */}
+        <div className="lp-right">
+          <div className="lp-glass">
+            {/* Logo inside glass (shown on small screens) */}
+            <div className="lp-glass__logo-row">
+              <img src={logo} alt="PharmaNexus" className="lp-glass__logo" />
             </div>
 
-            {/* PASSWORD */}
-            <div style={{ marginBottom: '25px' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  fontWeight: 500,
-                }}
-              >
-                Password
-              </label>
+            <div className="lp-glass__title">Welcome Back</div>
+            <div className="lp-glass__sub">Sign in to your franchise account</div>
 
-              <div
-                style={{
-                  position: 'relative',
-                }}
-              >
+            <form onSubmit={handleSubmit} className="lp-form">
+              {/* USER ID */}
+              <div className="lp-field">
+                <label className="lp-label">User ID</label>
                 <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
+                  type="text"
+                  name="userId"
+                  value={formData.userId}
                   onChange={handleChange}
-                  placeholder="Enter Password"
+                  placeholder="Enter your user ID"
                   required
-                  style={{
-                    width: '100%',
-                    height: '45px',
-                    border: '1px solid #dcdcdc',
-                    borderRadius: '6px',
-                    padding: '0 45px 0 15px',
-                    outline: 'none',
-                  }}
+                  className="lp-input"
+                  disabled={loading}
                 />
-
-                <span
-                  onClick={() =>
-                    setShowPassword(!showPassword)
-                  }
-                  style={{
-                    position: 'absolute',
-                    right: '15px',
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    cursor: 'pointer',
-                    color: '#666',
-                  }}
-                >
-                  {showPassword ? (
-                    <FaEyeSlash />
-                  ) : (
-                    <FaEye />
-                  )}
-                </span>
               </div>
-            </div>
 
-            {/* BUTTON */}
-            <button
-              type="submit"
-              disabled={loading}
-              style={{
-                width: '100%',
-                height: '45px',
-                border: 'none',
-                borderRadius: '6px',
-                background: '#006aa3',
-                color: '#fff',
-                fontWeight: 600,
-                cursor: 'pointer',
-                fontSize: '16px',
-              }}
-            >
-              {loading ? 'Loading...' : 'Login'}
-            </button>
-          </form>
+              {/* PASSWORD */}
+              <div className="lp-field">
+                <label className="lp-label">Password</label>
+                <div className="lp-input-wrap">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Enter your password"
+                    required
+                    className="lp-input lp-input--pw"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    className="lp-eye"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
+                    tabIndex="-1"
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
+              </div>
+
+              {/* SUBMIT */}
+              <button type="submit" className="lp-btn" disabled={loading}>
+                {loading && <div className="lp-spinner"></div>}
+                {loading ? 'Signing in...' : 'Sign In'}
+              </button>
+            </form>
+
+            <div className="lp-glass__footer">© 2024 PharmaNexus. All rights reserved.</div>
+          </div>
         </div>
       </div>
     </div>
