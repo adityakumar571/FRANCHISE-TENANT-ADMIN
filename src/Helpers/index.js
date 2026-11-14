@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 import { confirmDialog } from 'primereact/confirmdialog'
 
 // ── Base URL ──────────────────────────────────────────────────────────────────
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'
 
 // ── Static token export (for legacy use) ─────────────────────────────────────
 export const token = Cookies.get('multitenant')

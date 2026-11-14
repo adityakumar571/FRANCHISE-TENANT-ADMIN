@@ -47,6 +47,10 @@ const MedicineMasterList = () => {
         `/superadmin/medicines?search=${searchTerm}&page=${currentPage}&limit=${pageSize}`,
       )
 
+      console.log('📊 API Response:', response)
+      console.log('📋 Medicines:', response.data?.data?.medicines)
+      console.log('📄 Pagination:', response.data?.data?.pagination)
+
       if (response.data?.success) {
         setMedicines(response.data?.data?.medicines || [])
         // Updated: Extract total from pagination object
@@ -54,6 +58,7 @@ const MedicineMasterList = () => {
         setError(null)
       }
     } catch (err) {
+      console.error('❌ Fetch error:', err)
       setError(err.response?.data?.message || 'Failed to fetch medicines')
     } finally {
       setLoading(false)

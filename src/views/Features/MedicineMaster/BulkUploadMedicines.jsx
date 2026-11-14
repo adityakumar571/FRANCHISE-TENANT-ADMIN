@@ -13,7 +13,14 @@ import {
   CModalBody,
 } from '@coreui/react'
 
-import { Upload, Download, ArrowLeft, CheckCircle, FileSpreadsheet, AlertCircle } from 'lucide-react'
+import {
+  Upload,
+  Download,
+  ArrowLeft,
+  CheckCircle,
+  FileSpreadsheet,
+  AlertCircle,
+} from 'lucide-react'
 
 const BulkUploadMedicines = () => {
   const [file, setFile] = useState(null)
@@ -34,9 +41,8 @@ const BulkUploadMedicines = () => {
     if (!selectedFile) return
 
     const fileName = selectedFile.name.toLowerCase()
-    const isValidFile = fileName.endsWith('.csv') || 
-                        fileName.endsWith('.xlsx') || 
-                        fileName.endsWith('.xls')
+    const isValidFile =
+      fileName.endsWith('.csv') || fileName.endsWith('.xlsx') || fileName.endsWith('.xls')
 
     if (!isValidFile) {
       setError('Please select a valid file (.csv, .xlsx, or .xls)')
@@ -65,49 +71,99 @@ const BulkUploadMedicines = () => {
     setSuccess(null)
   }
 
-  // Download Template
-  const downloadTemplate = () => {
-    import('xlsx').then((XLSX) => {
+  // Download Medicine Master Template
+  const downloadTemplate = async () => {
+    try {
+      const XLSX = await import('xlsx')
+
       const sampleData = [
         {
-          medicine_id: 'MED001',
-          generic_name: 'Paracetamol',
-          mrp: 30,
-          brand_names: 'Dolo 650, Calpol',
-          manufacturer: 'ABC Pharma',
-          medical_system: 'Allopathy',
-          strength: '650 mg',
+          medicine_id: 'MED2000001',
+          generic_name: 'Ibuprofen',
+          brand_names: 'IbuprofenPlus,IbuprofenMax',
+          manufacturer: 'Indian Pharma Company',
+          medical_system: 'Ayurveda',
+          primary_specialty: 'Cardiology',
+          secondary_specialties: 'General Medicine',
+          patient_conditions: 'Hypertension',
+          sub_category: 'Hypertension',
           formulation: 'Tablet',
-          sub_category: 'Pain Relief',
-          expiry_months: 36,
-          prescription_required: 'No',
+          strength: '500 mg',
+          pack_size: '10 tablets',
+          mrp: 70,
+          prescription_required: 'Yes',
+          indications_symptoms: 'Hypertension',
+          benefits_summary: 'Used for hypertension',
+          common_side_effects: 'Mild nausea',
+          contraindications: 'Known allergy',
+          drug_interactions: '',
+          dosage_adult: 'As prescribed',
+          dosage_pediatric: '',
+          pregnancy_category: '',
+          storage_conditions: 'Store below 25°C',
+          expiry_months: 24,
+          vet_safe: 'No',
+          keywords_synonyms: 'ibuprofen,hypertension',
+          regulatory_status: 'Approved',
+          source: 'Old Data Reformatted',
+          last_updated: '2026-01-09',
+          notes: 'Converted from old master data',
         },
         {
-          medicine_id: 'MED002',
-          generic_name: 'Amoxicillin',
-          mrp: 120,
-          brand_names: 'Mox, Novamox',
-          manufacturer: 'XYZ Pharma',
+          medicine_id: 'MED2000002',
+          generic_name: 'Amlodipine',
+          brand_names: 'AmlodipinePlus,AmlodipineMax',
+          manufacturer: 'Indian Pharma Company',
           medical_system: 'Allopathy',
+          primary_specialty: 'Cardiology',
+          secondary_specialties: 'General Medicine',
+          patient_conditions: 'Back pain',
+          sub_category: 'Back pain',
+          formulation: 'Tablet',
           strength: '500 mg',
-          formulation: 'Capsule',
-          sub_category: 'Antibiotic',
-          expiry_months: 24,
+          pack_size: '10 tablets',
+          mrp: 322,
           prescription_required: 'Yes',
+          indications_symptoms: 'Back pain',
+          benefits_summary: 'Used for back pain',
+          common_side_effects: 'Mild nausea',
+          contraindications: 'Known allergy',
+          drug_interactions: '',
+          dosage_adult: 'As prescribed',
+          dosage_pediatric: '',
+          pregnancy_category: '',
+          storage_conditions: 'Store below 25°C',
+          expiry_months: 24,
+          vet_safe: 'No',
+          keywords_synonyms: 'amlodipine,back pain',
+          regulatory_status: 'Approved',
+          source: 'Old Data Reformatted',
+          last_updated: '2026-01-09',
+          notes: 'Converted from old master data',
         },
       ]
 
       const worksheet = XLSX.utils.json_to_sheet(sampleData)
+
       const workbook = XLSX.utils.book_new()
+
       XLSX.utils.book_append_sheet(workbook, worksheet, 'Medicines')
 
-      worksheet['!cols'] = [
-        { wch: 15 }, { wch: 20 }, { wch: 10 }, { wch: 30 }, { wch: 20 },
-        { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 15 },
-      ]
+      // Set column widths automatically
+      worksheet['!cols'] = Object.keys(sampleData[0]).map((key) => ({
+        wch: Math.max(key.length + 5, 18),
+      }))
+
+      // Freeze header row
+      worksheet['!freeze'] = {
+        xSplit: 0,
+        ySplit: 1,
+      }
 
       XLSX.writeFile(workbook, 'Medicine_Master_Template.xlsx')
-    })
+    } catch (error) {
+      console.error('Template Download Error:', error)
+    }
   }
 
   // Chunked Upload
@@ -131,9 +187,10 @@ const BulkUploadMedicines = () => {
       console.log(`📤 Starting chunked upload: ${totalChunks} chunks of 5MB each`)
 
       // Try to get token from localStorage or use empty (browser will send cookies automatically)
-      const token = localStorage.getItem('SA_TOKEN') || 
-                    localStorage.getItem('accessToken') || 
-                    localStorage.getItem('LMS')
+      const token =
+        localStorage.getItem('SA_TOKEN') ||
+        localStorage.getItem('accessToken') ||
+        localStorage.getItem('LMS')
 
       // Upload each chunk
       for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
@@ -158,7 +215,7 @@ const BulkUploadMedicines = () => {
           if (token) {
             headers['Authorization'] = `Bearer ${token}`
           }
-          
+
           const response = await fetch('/api/superadmin/medicines/bulk-upload-chunk', {
             method: 'POST',
             headers,
@@ -171,7 +228,7 @@ const BulkUploadMedicines = () => {
             throw new Error(errorData.message || `Chunk ${chunkIndex + 1} upload failed`)
           }
 
-          uploadedBytes += (end - start)
+          uploadedBytes += end - start
           const progressPercent = Math.min(99, Math.round((uploadedBytes / file.size) * 100))
           setUploadProgress(progressPercent)
 
@@ -184,7 +241,7 @@ const BulkUploadMedicines = () => {
         }
 
         if (chunkIndex < totalChunks - 1) {
-          await new Promise(resolve => setTimeout(resolve, 200))
+          await new Promise((resolve) => setTimeout(resolve, 200))
         }
       }
 
@@ -261,8 +318,16 @@ const BulkUploadMedicines = () => {
         </CCardHeader>
 
         <CCardBody>
-          {error && <CAlert color="danger" className="mb-3">{error}</CAlert>}
-          {success && <CAlert color="success" className="mb-3">{success}</CAlert>}
+          {error && (
+            <CAlert color="danger" className="mb-3">
+              {error}
+            </CAlert>
+          )}
+          {success && (
+            <CAlert color="success" className="mb-3">
+              {success}
+            </CAlert>
+          )}
 
           <div className="row g-4">
             {/* Template */}
@@ -293,12 +358,20 @@ const BulkUploadMedicines = () => {
                   <h6 className="mb-3">Required Columns</h6>
                   <div className="small">
                     <ul className="mb-3">
-                      <li><strong>generic_name</strong> - Drug name (required)</li>
-                      <li><strong>mrp</strong> - Price (required)</li>
-                      <li><strong>medicine_id</strong> - Unique ID (optional)</li>
+                      <li>
+                        <strong>generic_name</strong> - Drug name (required)
+                      </li>
+                      <li>
+                        <strong>mrp</strong> - Price (required)
+                      </li>
+                      <li>
+                        <strong>medicine_id</strong> - Unique ID (optional)
+                      </li>
                     </ul>
 
-                    <p className="mb-2"><strong>Optional:</strong></p>
+                    <p className="mb-2">
+                      <strong>Optional:</strong>
+                    </p>
                     <ul>
                       <li>brand_names, manufacturer, medical_system</li>
                       <li>strength, formulation, sub_category</li>
@@ -342,9 +415,7 @@ const BulkUploadMedicines = () => {
                         <p className="mb-1 fw-semibold">
                           {file ? file.name : 'Click to select or drag file'}
                         </p>
-                        <small className="text-muted">
-                          .xlsx, .xls, .csv (Max 100MB)
-                        </small>
+                        <small className="text-muted">.xlsx, .xls, .csv (Max 100MB)</small>
 
                         {file && (
                           <div className="mt-2">
@@ -362,8 +433,7 @@ const BulkUploadMedicines = () => {
                         ✓ 5MB chunk uploads
                         <br />
                         ✓ Up to 2 lakh records
-                        <br />
-                        ✓ Auto duplicate skip
+                        <br />✓ Auto duplicate skip
                       </small>
                     </div>
 
@@ -389,16 +459,19 @@ const BulkUploadMedicines = () => {
 
                   {uploading && (
                     <div className="mt-3">
-                      <CProgressBar 
-                        value={uploadProgress} 
-                        animated 
-                        striped 
+                      <CProgressBar
+                        value={uploadProgress}
+                        animated
+                        striped
                         color="info"
                         style={{ height: '24px' }}
                       />
                       <small className="text-muted d-block mt-2 text-center">
                         {chunkProgress.total > 0 ? (
-                          <>Chunk {chunkProgress.current}/{chunkProgress.total} • {Math.round(uploadProgress)}%</>
+                          <>
+                            Chunk {chunkProgress.current}/{chunkProgress.total} •{' '}
+                            {Math.round(uploadProgress)}%
+                          </>
                         ) : (
                           <>Processing {Math.round(uploadProgress)}%</>
                         )}
@@ -434,9 +507,7 @@ const BulkUploadMedicines = () => {
 
             <div className="col-md-6">
               <div className="bg-info bg-opacity-10 p-3 rounded">
-                <div className="h4 text-info fw-bold mb-1">
-                  {resultDetails?.total_count || 0}
-                </div>
+                <div className="h4 text-info fw-bold mb-1">{resultDetails?.total_count || 0}</div>
                 <small className="text-muted">Total Processed</small>
               </div>
             </div>
@@ -465,8 +536,8 @@ const BulkUploadMedicines = () => {
           )}
 
           <div className="mt-4 text-end">
-            <CButton 
-              color="success" 
+            <CButton
+              color="success"
               onClick={() => {
                 setShowResultModal(false)
                 window.location.href = '/medicine-master'
